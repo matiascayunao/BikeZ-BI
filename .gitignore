@@ -1,0 +1,12 @@
+
+# Archivos temporales de Visual Studio
+.vs/
+**/bin/
+**/obj/
+*.suo
+*.user
+*.dtproj.user
+
+# Archivos temporales de Windows
+Thumbs.db
+Desktop.ini
