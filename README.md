@@ -1,6 +1,6 @@
 # BikeZ - Inteligencia de Negocios
 
-## Integrantes y paralelo
+# Integrantes y paralelo
 
 - Martín Arriagada
 - Matías Cayunao
