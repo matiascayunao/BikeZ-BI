@@ -44,7 +44,7 @@ BEGIN
         Mes             TINYINT       NOT NULL,
         Trimestre       TINYINT       NOT NULL,
         Anio            SMALLINT      NOT NULL,
-        DiaSemana       NVARCHAR(20)  NOT NULL,
+        DiaSemana       NVARCHAR(40)  NOT NULL,
         CONSTRAINT PK_Dim_Tiempo PRIMARY KEY (FechaID),
         CONSTRAINT UQ_Dim_Tiempo_Fecha UNIQUE (Fecha),
         CONSTRAINT CK_Dim_Tiempo_Mes CHECK (Mes BETWEEN 1 AND 12),
@@ -132,7 +132,7 @@ BEGIN
     CREATE TABLE dbo.Dim_Territorio
     (
         TerritorioID       INT           IDENTITY(1,1) NOT NULL,
-        Nombre_Territorio         NVARCHAR(50)  NOT NULL,
+        Nombre_Territorio         NVARCHAR(100)  NOT NULL,
         Pais               NVARCHAR(50)  NOT NULL,
         Grupo              NVARCHAR(50)  NOT NULL,
         CantidadAlmacenes  INT           NOT NULL,

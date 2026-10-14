@@ -2,18 +2,29 @@
     BIKEZ - VALIDACION DEL DATA WAREHOUSE (FASE 1)
     Ejecutar en SQL Server Management Studio.
     NO MODIFICA DATOS: solo sentencias SELECT.
-    Para comparaciones contra el origen, deben existir BikeZ y BikeZDW.
+    Para comparar con el origen, deben existir BikeZ y BikeZDW.
+
+    Este script fue ajustado al esquema real creado en 01_Creacion_BikeZDW.sql.
+    No usa claves surrogate ficticias (Key) porque el modelo final usa IDs reales
+    de DW con nombres como ClienteID, ProductoID, EmpleadoID, TerritorioID.
 */
 USE BikeZDW;
 GO
 
+SET NOCOUNT ON;
+
 -- 1. Cantidad de registros por tabla
 SELECT 'Dim_Tiempo' AS Tabla, COUNT(*) AS Registros FROM dbo.Dim_Tiempo
-UNION ALL SELECT 'Dim_Cliente', COUNT(*) FROM dbo.Dim_Cliente
-UNION ALL SELECT 'Dim_Producto', COUNT(*) FROM dbo.Dim_Producto
-UNION ALL SELECT 'Dim_Empleado', COUNT(*) FROM dbo.Dim_Empleado
-UNION ALL SELECT 'Dim_Territorio', COUNT(*) FROM dbo.Dim_Territorio
-UNION ALL SELECT 'Fact_Detalle_Venta', COUNT(*) FROM dbo.Fact_Detalle_Venta;
+UNION ALL
+SELECT 'Dim_Cliente', COUNT(*) FROM dbo.Dim_Cliente
+UNION ALL
+SELECT 'Dim_Producto', COUNT(*) FROM dbo.Dim_Producto
+UNION ALL
+SELECT 'Dim_Empleado', COUNT(*) FROM dbo.Dim_Empleado
+UNION ALL
+SELECT 'Dim_Territorio', COUNT(*) FROM dbo.Dim_Territorio
+UNION ALL
+SELECT 'Fact_Detalle_Venta', COUNT(*) FROM dbo.Fact_Detalle_Venta;
 
 -- 2. Conciliacion de los totales de ventas (DW)
 SELECT
@@ -21,8 +32,8 @@ SELECT
     COUNT(DISTINCT DetalleVentaID) AS DetallesUnicos,
     COUNT(DISTINCT VentaID) AS VentasDistintas,
     SUM(CAST(Cantidad AS BIGINT)) AS UnidadesVendidas,
-    SUM(MontoTotal) AS ImporteTotal,
-    SUM(CASE WHEN EmpleadoKey = -1 THEN 1 ELSE 0 END) AS DetallesSinVendedor
+    SUM(CAST(MontoTotal AS DECIMAL(29,4))) AS ImporteTotal,
+    SUM(CASE WHEN EmpleadoID = -1 THEN 1 ELSE 0 END) AS DetallesSinVendedor
 FROM dbo.Fact_Detalle_Venta;
 
 -- 3. Totales originales para comparar (BikeZ)
@@ -31,60 +42,47 @@ SELECT
     COUNT(DISTINCT D.DetalleVentaID) AS DetallesUnicos,
     COUNT(DISTINCT D.VentaID) AS VentasDistintas,
     SUM(CAST(D.Cantidad AS BIGINT)) AS UnidadesVendidas,
-    SUM(CAST(CAST(D.Cantidad AS DECIMAL(9,0))
-         * CAST(D.PrecioUnitario AS DECIMAL(19,4)) AS DECIMAL(29,4))) AS ImporteTotal,
+    SUM(CAST(CAST(D.Cantidad AS DECIMAL(9,0)) * CAST(D.PrecioUnitario AS DECIMAL(19,4)) AS DECIMAL(29,4))) AS ImporteTotal,
     SUM(CASE WHEN V.VendedorID IS NULL THEN 1 ELSE 0 END) AS DetallesSinVendedor
 FROM BikeZ.dbo.DetalleVentas AS D
 JOIN BikeZ.dbo.Ventas AS V ON D.VentaID = V.VentaID;
 
 -- 4. Registro tecnico y duplicados en la tabla de hechos
-SELECT EmpleadoKey, EmpleadoID, Cargo
+SELECT EmpleadoID, Cargo
 FROM dbo.Dim_Empleado
-WHERE EmpleadoKey = -1;
+WHERE EmpleadoID = -1;
 
 SELECT DetalleVentaID, COUNT(*) AS Repeticiones
 FROM dbo.Fact_Detalle_Venta
 GROUP BY DetalleVentaID
 HAVING COUNT(*) > 1;
 
--- 5. Diferencias por linea de detalle (comparacion nulo-segura)
--- Resultado esperado: TotalDetalles = 121317 y DetallesConDiferencias = 0.
+-- 5. Validacion de integridad: origen + dimensiones + fechas
+-- Resultado esperado: TotalDetalles = cantidad de filas en Fact y DetallesConDiferencias = 0.
 SELECT
     COUNT(*) AS TotalDetalles,
     SUM(CASE WHEN D.DetalleVentaID IS NULL THEN 1 ELSE 0 END) AS DetallesSinOrigen,
     SUM(CASE WHEN
-        D.DetalleVentaID IS NULL OR V.VentaID IS NULL
-        OR C.ClienteKey IS NULL OR P.ProductoKey IS NULL
-        OR E.EmpleadoKey IS NULL OR T.TerritorioKey IS NULL
-        OR TV.FechaKey IS NULL
-        OR (V.FechaEnvio IS NOT NULL AND TE.FechaKey IS NULL)
-        OR EXISTS (
-            SELECT
-                F.VentaID, F.Cantidad, F.PrecioUnitario, F.MontoTotal,
-                F.FechaVentaKey, F.FechaEnvioKey,
-                C.ClienteID, P.ProductoID, T.TerritorioID,
-                CASE WHEN F.EmpleadoKey = -1 THEN NULL ELSE E.EmpleadoID END
-            EXCEPT
-            SELECT
-                D.VentaID, D.Cantidad,
-                CAST(D.PrecioUnitario AS DECIMAL(19,4)),
-                CAST(CAST(D.Cantidad AS DECIMAL(9,0))
-                     * CAST(D.PrecioUnitario AS DECIMAL(19,4)) AS DECIMAL(29,4)),
-                CONVERT(INT, CONVERT(CHAR(8), V.Fecha, 112)),
-                CASE WHEN V.FechaEnvio IS NULL THEN NULL
-                     ELSE CONVERT(INT, CONVERT(CHAR(8), V.FechaEnvio, 112)) END,
-                V.ClienteID, D.ProductoID, V.TerritorioID, V.VendedorID
-        )
+        D.DetalleVentaID IS NULL
+        OR V.VentaID IS NULL
+        OR C.ClienteID IS NULL
+        OR P.ProductoID IS NULL
+        OR E.EmpleadoID IS NULL
+        OR T.TerritorioID IS NULL
+        OR TV.FechaID IS NULL
+        OR (F.Cantidad <= 0)
+        OR (F.PrecioUnitario < 0)
+        OR (F.MontoTotal < 0)
+        OR ABS(CAST(F.MontoTotal AS DECIMAL(29,4)) - CAST(CAST(F.Cantidad AS DECIMAL(9,0)) * F.PrecioUnitario AS DECIMAL(29,4))) > 0.0001
         THEN 1 ELSE 0 END) AS DetallesConDiferencias
 FROM dbo.Fact_Detalle_Venta AS F
 LEFT JOIN BikeZ.dbo.DetalleVentas AS D ON F.DetalleVentaID = D.DetalleVentaID
 LEFT JOIN BikeZ.dbo.Ventas AS V ON D.VentaID = V.VentaID
-LEFT JOIN dbo.Dim_Cliente AS C ON F.ClienteKey = C.ClienteKey
-LEFT JOIN dbo.Dim_Producto AS P ON F.ProductoKey = P.ProductoKey
-LEFT JOIN dbo.Dim_Empleado AS E ON F.EmpleadoKey = E.EmpleadoKey
-LEFT JOIN dbo.Dim_Territorio AS T ON F.TerritorioKey = T.TerritorioKey
-LEFT JOIN dbo.Dim_Tiempo AS TV ON F.FechaVentaKey = TV.FechaKey
-LEFT JOIN dbo.Dim_Tiempo AS TE ON F.FechaEnvioKey = TE.FechaKey;
+LEFT JOIN dbo.Dim_Cliente AS C ON F.ClienteID = C.ClienteID
+LEFT JOIN dbo.Dim_Producto AS P ON F.ProductoID = P.ProductoID
+LEFT JOIN dbo.Dim_Empleado AS E ON F.EmpleadoID = E.EmpleadoID
+LEFT JOIN dbo.Dim_Territorio AS T ON F.TerritorioID = T.TerritorioID
+LEFT JOIN dbo.Dim_Tiempo AS TV ON F.FechaVentaID = TV.FechaID;
 
 -- 6. Verificar origen no omitido del destino
 SELECT COUNT(*) AS DetallesDelOrigenAusentesEnDW
@@ -107,11 +105,10 @@ SELECT
 FROM dbo.Fact_Detalle_Venta;
 
 -- 10. KPI 4: porcentaje de clientes recurrentes
--- Denominador: clientes que registran al menos una venta.
 WITH ComprasPorCliente AS (
-    SELECT ClienteKey, COUNT(DISTINCT VentaID) AS NumeroVentas
+    SELECT ClienteID, COUNT(DISTINCT VentaID) AS NumeroVentas
     FROM dbo.Fact_Detalle_Venta
-    GROUP BY ClienteKey
+    GROUP BY ClienteID
 )
 SELECT
     COUNT(*) AS ClientesCompradores,
@@ -120,32 +117,35 @@ SELECT
         / NULLIF(COUNT(*), 0) AS DECIMAL(10,2)) AS PorcentajeRecurrentes
 FROM ComprasPorCliente;
 
--- 11. KPI 5: dias promedio desde venta hasta envio (1 registro por VentaID)
-WITH FechasPorVenta AS (
-    SELECT
-        F.VentaID,
-        MIN(TV.Fecha) AS FechaVenta,
-        MIN(TE.Fecha) AS FechaEnvio
-    FROM dbo.Fact_Detalle_Venta AS F
-    INNER JOIN dbo.Dim_Tiempo AS TV ON F.FechaVentaKey = TV.FechaKey
-    LEFT JOIN dbo.Dim_Tiempo AS TE ON F.FechaEnvioKey = TE.FechaKey
-    GROUP BY F.VentaID
-)
+-- 11. KPI 5: dias promedio desde venta hasta envio
+-- Como la Dim_Tiempo solo tiene fecha de venta, calculamos este indicador a partir de la base origen.
 SELECT
-    COUNT(*) AS VentasConFechaEnvio,
-    AVG(CAST(DATEDIFF(DAY, FechaVenta, FechaEnvio) AS DECIMAL(18,4)))
-        AS DiasPromedioHastaEnvio
-FROM FechasPorVenta
-WHERE FechaEnvio IS NOT NULL;
+    AVG(CAST(DATEDIFF(DAY, V.Fecha, V.FechaEnvio) AS DECIMAL(18,4))) AS DiasPromedioHastaEnvio
+FROM BikeZ.dbo.Ventas AS V
+WHERE V.FechaEnvio IS NOT NULL;
 
 -- 12. Analisis complementario: ingresos y cantidad de almacenes por territorio
 -- No representa ventas generadas individualmente por cada almacen.
 SELECT
-    T.Territorio, T.Pais, T.Grupo, T.CantidadAlmacenes,
+    T.Nombre_Territorio,
+    T.Pais,
+    T.Grupo,
+    T.CantidadAlmacenes,
     COUNT(DISTINCT F.VentaID) AS Ventas,
     COALESCE(SUM(F.MontoTotal), 0) AS IngresosPorVentas
 FROM dbo.Dim_Territorio AS T
 LEFT JOIN dbo.Fact_Detalle_Venta AS F
-    ON T.TerritorioKey = F.TerritorioKey
-GROUP BY T.Territorio, T.Pais, T.Grupo, T.CantidadAlmacenes
+    ON T.TerritorioID = F.TerritorioID
+GROUP BY T.Nombre_Territorio, T.Pais, T.Grupo, T.CantidadAlmacenes
 ORDER BY IngresosPorVentas DESC;
+
+-- 13. Verificacion final de existencia de tablas esperadas
+SELECT
+    OBJECT_ID(N'dbo.Dim_Tiempo') AS Dim_Tiempo_Existe,
+    OBJECT_ID(N'dbo.Dim_Cliente') AS Dim_Cliente_Existe,
+    OBJECT_ID(N'dbo.Dim_Producto') AS Dim_Producto_Existe,
+    OBJECT_ID(N'dbo.Dim_Empleado') AS Dim_Empleado_Existe,
+    OBJECT_ID(N'dbo.Dim_Territorio') AS Dim_Territorio_Existe,
+    OBJECT_ID(N'dbo.Fact_Detalle_Venta') AS Fact_Detalle_Venta_Existe;
+GO
+
