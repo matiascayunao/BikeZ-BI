@@ -65,7 +65,7 @@ IF OBJECT_ID(N'dbo.Dim_Cliente', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Cliente
     (
-        ClienteID       INT           IDENTITY(1,1) NOT NULL,
+        ClienteID       INT            NOT NULL,
         Nombre          NVARCHAR(50)  NULL,
         Apellido        NVARCHAR(50)  NULL,
         CONSTRAINT PK_Dim_Cliente PRIMARY KEY (ClienteID)
@@ -82,7 +82,7 @@ IF OBJECT_ID(N'dbo.Dim_Producto', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Producto
     (
-        ProductoID       INT           IDENTITY(1,1) NOT NULL,
+        ProductoID       INT            NOT NULL,
         Nombre_Producto         NVARCHAR(50)  NOT NULL,
         Color            NVARCHAR(15)  NULL,
         Categoria        NVARCHAR(50)  NOT NULL,
@@ -100,7 +100,7 @@ IF OBJECT_ID(N'dbo.Dim_Empleado', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Empleado
     (
-        EmpleadoID        INT           IDENTITY(1,1) NOT NULL,
+        EmpleadoID        INT            NOT NULL,
         Cargo             NVARCHAR(50)  NULL,
         Genero            NCHAR(1)      NULL,
         FechaNacimiento   DATE          NULL,
@@ -131,7 +131,7 @@ IF OBJECT_ID(N'dbo.Dim_Territorio', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Territorio
     (
-        TerritorioID       INT           IDENTITY(1,1) NOT NULL,
+        TerritorioID       INT            NOT NULL,
         Nombre_Territorio         NVARCHAR(100)  NOT NULL,
         Pais               NVARCHAR(50)  NOT NULL,
         Grupo              NVARCHAR(50)  NOT NULL,

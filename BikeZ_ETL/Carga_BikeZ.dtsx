@@ -11,8 +11,8 @@
   DTS:LocaleID="13322"
   DTS:ObjectName="Carga_BikeZ"
   DTS:PackageType="5"
-  DTS:VersionBuild="21"
-  DTS:VersionGUID="{DDD4390F-2F69-4985-8754-59CBD4555F2B}">
+  DTS:VersionBuild="23"
+  DTS:VersionGUID="{08930906-51F8-4748-BD39-20E42578CCD0}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -57,7 +57,7 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{EFCE8737-E3EC-4CFD-B5F6-C51A6DBB5059}"
-          SQLTask:SqlStatementSource="&#xA;DELETE FROM dbo.Fact_Detalle_Venta;&#xA;&#xA;DELETE FROM dbo.Dim_Tiempo;&#xA;DELETE FROM dbo.Dim_Cliente;&#xA;DELETE FROM dbo.Dim_Producto;&#xA;DELETE FROM dbo.Dim_Territorio;&#xA;&#xA;DELETE FROM dbo.Dim_Empleado&#xA;WHERE EmpleadoKey &lt;&gt; -1;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="&#xA;DELETE FROM dbo.Fact_Detalle_Venta;&#xA;&#xA;DELETE FROM dbo.Dim_Tiempo;&#xA;DELETE FROM dbo.Dim_Cliente;&#xA;DELETE FROM dbo.Dim_Producto;&#xA;DELETE FROM dbo.Dim_Territorio;&#xA;&#xA;DELETE FROM dbo.Dim_Empleado;&#xA;&#xA;IF EXISTS (SELECT 1 FROM sys.identity_columns WHERE object_id = OBJECT_ID(N'dbo.Dim_Empleado'))&#xA;    SET IDENTITY_INSERT dbo.Dim_Empleado ON;&#xA;&#xA;INSERT INTO dbo.Dim_Empleado (EmpleadoID, Cargo, Genero, FechaNacimiento)&#xA;VALUES (-1, N'Sin asignar', NULL, NULL);&#xA;&#xA;IF EXISTS (SELECT 1 FROM sys.identity_columns WHERE object_id = OBJECT_ID(N'dbo.Dim_Empleado'))&#xA;    SET IDENTITY_INSERT dbo.Dim_Empleado OFF;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -116,7 +116,7 @@
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
-                  name="FastLoadKeepIdentity">false</property>
+                  name="FastLoadKeepIdentity">true</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
@@ -169,10 +169,6 @@
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\Dim_Cliente\Destino Dim_Cliente.Inputs[OLE DB Destination Input].ExternalColumns[ClienteKey]"
-                      dataType="i4"
-                      name="ClienteKey" />
                     <externalMetadataColumn
                       refId="Package\Dim_Cliente\Destino Dim_Cliente.Inputs[OLE DB Destination Input].ExternalColumns[ClienteID]"
                       dataType="i4"
@@ -430,7 +426,7 @@
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
-                  name="FastLoadKeepIdentity">false</property>
+                  name="FastLoadKeepIdentity">true</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
@@ -486,19 +482,9 @@
                       cachedName="Genero"
                       externalMetadataColumnId="Package\Dim_Empleado\Destino Dim_Empleado.Inputs[OLE DB Destination Input].ExternalColumns[Genero]"
                       lineageId="Package\Dim_Empleado\Origen Dim_Empleado.Outputs[OLE DB Source Output].Columns[Genero]" />
-                    <inputColumn
-                      refId="Package\Dim_Empleado\Destino Dim_Empleado.Inputs[OLE DB Destination Input].Columns[FechaContratacion]"
-                      cachedDataType="dbDate"
-                      cachedName="FechaContratacion"
-                      externalMetadataColumnId="Package\Dim_Empleado\Destino Dim_Empleado.Inputs[OLE DB Destination Input].ExternalColumns[FechaContratacion]"
-                      lineageId="Package\Dim_Empleado\Origen Dim_Empleado.Outputs[OLE DB Source Output].Columns[FechaContratacion]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\Dim_Empleado\Destino Dim_Empleado.Inputs[OLE DB Destination Input].ExternalColumns[EmpleadoKey]"
-                      dataType="i4"
-                      name="EmpleadoKey" />
                     <externalMetadataColumn
                       refId="Package\Dim_Empleado\Destino Dim_Empleado.Inputs[OLE DB Destination Input].ExternalColumns[EmpleadoID]"
                       dataType="i4"
@@ -517,10 +503,6 @@
                       refId="Package\Dim_Empleado\Destino Dim_Empleado.Inputs[OLE DB Destination Input].ExternalColumns[FechaNacimiento]"
                       dataType="dbDate"
                       name="FechaNacimiento" />
-                    <externalMetadataColumn
-                      refId="Package\Dim_Empleado\Destino Dim_Empleado.Inputs[OLE DB Destination Input].ExternalColumns[FechaContratacion]"
-                      dataType="dbDate"
-                      name="FechaContratacion" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -857,7 +839,7 @@
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
-                  name="FastLoadKeepIdentity">false</property>
+                  name="FastLoadKeepIdentity">true</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
@@ -894,12 +876,12 @@
                       externalMetadataColumnId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[ProductoID]"
                       lineageId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].Columns[ProductoID]" />
                     <inputColumn
-                      refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].Columns[Producto]"
+                      refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].Columns[Nombre_Producto]"
                       cachedDataType="wstr"
                       cachedLength="50"
-                      cachedName="Producto"
-                      externalMetadataColumnId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[Producto]"
-                      lineageId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].Columns[Producto]" />
+                      cachedName="Nombre_Producto"
+                      externalMetadataColumnId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[Nombre_Producto]"
+                      lineageId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].Columns[Nombre_Producto]" />
                     <inputColumn
                       refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].Columns[Color]"
                       cachedDataType="wstr"
@@ -918,18 +900,14 @@
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[ProductoKey]"
-                      dataType="i4"
-                      name="ProductoKey" />
-                    <externalMetadataColumn
                       refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[ProductoID]"
                       dataType="i4"
                       name="ProductoID" />
                     <externalMetadataColumn
-                      refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[Producto]"
+                      refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[Nombre_Producto]"
                       dataType="wstr"
                       length="50"
-                      name="Producto" />
+                      name="Nombre_Producto" />
                     <externalMetadataColumn
                       refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[Color]"
                       dataType="wstr"
@@ -995,7 +973,7 @@
                   name="SqlCommand"
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT
     P.ProductoID,
-    P.Producto,
+    P.Producto AS Nombre_Producto,
     P.Color,
     COALESCE(C.Categoria, N'Sin categoría') AS Categoria
 FROM dbo.Productos AS P
@@ -1046,14 +1024,14 @@ LEFT JOIN dbo.Categorias AS C
                       name="ProductoID"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
-                      refId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].Columns[Producto]"
+                      refId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].Columns[Nombre_Producto]"
                       dataType="wstr"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].ExternalColumns[Producto]"
+                      externalMetadataColumnId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].ExternalColumns[Nombre_Producto]"
                       length="50"
-                      lineageId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].Columns[Producto]"
-                      name="Producto"
+                      lineageId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].Columns[Nombre_Producto]"
+                      name="Nombre_Producto"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
                       refId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].Columns[Color]"
@@ -1083,10 +1061,10 @@ LEFT JOIN dbo.Categorias AS C
                       dataType="i4"
                       name="ProductoID" />
                     <externalMetadataColumn
-                      refId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].ExternalColumns[Producto]"
+                      refId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].ExternalColumns[Nombre_Producto]"
                       dataType="wstr"
                       length="50"
-                      name="Producto" />
+                      name="Nombre_Producto" />
                     <externalMetadataColumn
                       refId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].ExternalColumns[Color]"
                       dataType="wstr"
@@ -1110,11 +1088,11 @@ LEFT JOIN dbo.Categorias AS C
                       lineageId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Error Output].Columns[ProductoID]"
                       name="ProductoID" />
                     <outputColumn
-                      refId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Error Output].Columns[Producto]"
+                      refId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Error Output].Columns[Nombre_Producto]"
                       dataType="wstr"
                       length="50"
-                      lineageId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Error Output].Columns[Producto]"
-                      name="Producto" />
+                      lineageId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Error Output].Columns[Nombre_Producto]"
+                      name="Nombre_Producto" />
                     <outputColumn
                       refId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Error Output].Columns[Color]"
                       dataType="wstr"
@@ -1211,7 +1189,7 @@ LEFT JOIN dbo.Categorias AS C
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
-                  name="FastLoadKeepIdentity">false</property>
+                  name="FastLoadKeepIdentity">true</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
@@ -1248,12 +1226,12 @@ LEFT JOIN dbo.Categorias AS C
                       externalMetadataColumnId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].ExternalColumns[TerritorioID]"
                       lineageId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].Columns[TerritorioID]" />
                     <inputColumn
-                      refId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].Columns[Territorio]"
+                      refId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].Columns[Nombre_Territorio]"
                       cachedDataType="wstr"
                       cachedLength="50"
-                      cachedName="Territorio"
-                      externalMetadataColumnId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].ExternalColumns[Territorio]"
-                      lineageId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].Columns[Territorio]" />
+                      cachedName="Nombre_Territorio"
+                      externalMetadataColumnId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].ExternalColumns[Nombre_Territorio]"
+                      lineageId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].Columns[Nombre_Territorio]" />
                     <inputColumn
                       refId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].Columns[Pais]"
                       cachedDataType="wstr"
@@ -1278,18 +1256,14 @@ LEFT JOIN dbo.Categorias AS C
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].ExternalColumns[TerritorioKey]"
-                      dataType="i4"
-                      name="TerritorioKey" />
-                    <externalMetadataColumn
                       refId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].ExternalColumns[TerritorioID]"
                       dataType="i4"
                       name="TerritorioID" />
                     <externalMetadataColumn
-                      refId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].ExternalColumns[Territorio]"
+                      refId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].ExternalColumns[Nombre_Territorio]"
                       dataType="wstr"
-                      length="50"
-                      name="Territorio" />
+                      length="100"
+                      name="Nombre_Territorio" />
                     <externalMetadataColumn
                       refId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].ExternalColumns[Pais]"
                       dataType="wstr"
@@ -1359,7 +1333,7 @@ LEFT JOIN dbo.Categorias AS C
                   name="SqlCommand"
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT
     T.TerritorioID,
-    T.Territorio,
+    T.Territorio AS Nombre_Territorio,
     P.Pais,
     T.Grupo,
     COUNT(A.AlmacenID) AS CantidadAlmacenes
@@ -1418,14 +1392,14 @@ GROUP BY
                       name="TerritorioID"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
-                      refId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].Columns[Territorio]"
+                      refId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].Columns[Nombre_Territorio]"
                       dataType="wstr"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].ExternalColumns[Territorio]"
+                      externalMetadataColumnId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].ExternalColumns[Nombre_Territorio]"
                       length="50"
-                      lineageId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].Columns[Territorio]"
-                      name="Territorio"
+                      lineageId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].Columns[Nombre_Territorio]"
+                      name="Nombre_Territorio"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
                       refId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].Columns[Pais]"
@@ -1464,10 +1438,10 @@ GROUP BY
                       dataType="i4"
                       name="TerritorioID" />
                     <externalMetadataColumn
-                      refId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].ExternalColumns[Territorio]"
+                      refId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].ExternalColumns[Nombre_Territorio]"
                       dataType="wstr"
                       length="50"
-                      name="Territorio" />
+                      name="Nombre_Territorio" />
                     <externalMetadataColumn
                       refId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Output].ExternalColumns[Pais]"
                       dataType="wstr"
@@ -1495,11 +1469,11 @@ GROUP BY
                       lineageId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Error Output].Columns[TerritorioID]"
                       name="TerritorioID" />
                     <outputColumn
-                      refId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Error Output].Columns[Territorio]"
+                      refId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Error Output].Columns[Nombre_Territorio]"
                       dataType="wstr"
                       length="50"
-                      lineageId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Error Output].Columns[Territorio]"
-                      name="Territorio" />
+                      lineageId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Error Output].Columns[Nombre_Territorio]"
+                      name="Nombre_Territorio" />
                     <outputColumn
                       refId="Package\Dim_Territorio\Origen Dim_Territorio.Outputs[OLE DB Source Error Output].Columns[Pais]"
                       dataType="wstr"
@@ -1601,7 +1575,7 @@ GROUP BY
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
-                  name="FastLoadKeepIdentity">false</property>
+                  name="FastLoadKeepIdentity">true</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
@@ -1632,11 +1606,11 @@ GROUP BY
                   name="OLE DB Destination Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].Columns[FechaKey]"
+                      refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].Columns[FechaID]"
                       cachedDataType="i4"
-                      cachedName="FechaKey"
-                      externalMetadataColumnId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[FechaKey]"
-                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[FechaKey]" />
+                      cachedName="FechaID"
+                      externalMetadataColumnId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[FechaID]"
+                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[FechaID]" />
                     <inputColumn
                       refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].Columns[Fecha]"
                       cachedDataType="dbDate"
@@ -1674,19 +1648,13 @@ GROUP BY
                       cachedName="DiaSemana"
                       externalMetadataColumnId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[DiaSemana]"
                       lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[DiaSemana]" />
-                    <inputColumn
-                      refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].Columns[EsFinDeSemana]"
-                      cachedDataType="bool"
-                      cachedName="EsFinDeSemana"
-                      externalMetadataColumnId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[EsFinDeSemana]"
-                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[EsFinDeSemana]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[FechaKey]"
+                      refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[FechaID]"
                       dataType="i4"
-                      name="FechaKey" />
+                      name="FechaID" />
                     <externalMetadataColumn
                       refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[Fecha]"
                       dataType="dbDate"
@@ -1710,12 +1678,8 @@ GROUP BY
                     <externalMetadataColumn
                       refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[DiaSemana]"
                       dataType="wstr"
-                      length="20"
+                      length="40"
                       name="DiaSemana" />
-                    <externalMetadataColumn
-                      refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[EsFinDeSemana]"
-                      dataType="bool"
-                      name="EsFinDeSemana" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1786,7 +1750,7 @@ Calendario AS (
     WHERE Fecha &lt; FechaFin
 )
 SELECT
-    CONVERT(INT, CONVERT(CHAR(8), Fecha, 112)) AS FechaKey,
+    CONVERT(INT, CONVERT(CHAR(8), Fecha, 112)) AS FechaID,
     Fecha,
     CAST(DAY(Fecha) AS TINYINT) AS Dia,
     CAST(MONTH(Fecha) AS TINYINT) AS Mes,
@@ -1846,13 +1810,13 @@ OPTION (MAXRECURSION 0);</property>
                   name="OLE DB Source Output">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[FechaKey]"
+                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[FechaID]"
                       dataType="i4"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[FechaKey]"
-                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[FechaKey]"
-                      name="FechaKey"
+                      externalMetadataColumnId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[FechaID]"
+                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[FechaID]"
+                      name="FechaID"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
                       refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[Fecha]"
@@ -1922,9 +1886,9 @@ OPTION (MAXRECURSION 0);</property>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[FechaKey]"
+                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[FechaID]"
                       dataType="i4"
-                      name="FechaKey" />
+                      name="FechaID" />
                     <externalMetadataColumn
                       refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[Fecha]"
                       dataType="dbDate"
@@ -1962,10 +1926,10 @@ OPTION (MAXRECURSION 0);</property>
                   name="OLE DB Source Error Output">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[FechaKey]"
+                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[FechaID]"
                       dataType="i4"
-                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[FechaKey]"
-                      name="FechaKey" />
+                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[FechaID]"
+                      name="FechaID" />
                     <outputColumn
                       refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[Fecha]"
                       dataType="dbDate"
@@ -2086,7 +2050,7 @@ OPTION (MAXRECURSION 0);</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
-                  name="FastLoadKeepIdentity">false</property>
+                  name="FastLoadKeepIdentity">true</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
@@ -2129,41 +2093,35 @@ OPTION (MAXRECURSION 0);</property>
                       externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[VentaID]"
                       lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[VentaID]" />
                     <inputColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[FechaVentaKey]"
+                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[FechaVentaID]"
                       cachedDataType="i4"
-                      cachedName="FechaVentaKey"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[FechaVentaKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[FechaVentaKey]" />
+                      cachedName="FechaVentaID"
+                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[FechaVentaID]"
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[FechaVentaID]" />
                     <inputColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[FechaEnvioKey]"
+                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[ClienteID]"
                       cachedDataType="i4"
-                      cachedName="FechaEnvioKey"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[FechaEnvioKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[FechaEnvioKey]" />
+                      cachedName="ClienteID"
+                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[ClienteID]"
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ClienteID]" />
                     <inputColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[ClienteKey]"
+                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[ProductoID]"
                       cachedDataType="i4"
-                      cachedName="ClienteKey"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[ClienteKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ClienteKey]" />
+                      cachedName="ProductoID"
+                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[ProductoID]"
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ProductoID]" />
                     <inputColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[ProductoKey]"
+                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[EmpleadoID]"
                       cachedDataType="i4"
-                      cachedName="ProductoKey"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[ProductoKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ProductoKey]" />
+                      cachedName="EmpleadoID"
+                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[EmpleadoID]"
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[EmpleadoID]" />
                     <inputColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[EmpleadoKey]"
+                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[TerritorioID]"
                       cachedDataType="i4"
-                      cachedName="EmpleadoKey"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[EmpleadoKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[EmpleadoKey]" />
-                    <inputColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[TerritorioKey]"
-                      cachedDataType="i4"
-                      cachedName="TerritorioKey"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[TerritorioKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[TerritorioKey]" />
+                      cachedName="TerritorioID"
+                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[TerritorioID]"
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[TerritorioID]" />
                     <inputColumn
                       refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].Columns[Cantidad]"
                       cachedDataType="i2"
@@ -2198,29 +2156,25 @@ OPTION (MAXRECURSION 0);</property>
                       dataType="i4"
                       name="VentaID" />
                     <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[FechaVentaKey]"
+                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[FechaVentaID]"
                       dataType="i4"
-                      name="FechaVentaKey" />
+                      name="FechaVentaID" />
                     <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[FechaEnvioKey]"
+                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[ClienteID]"
                       dataType="i4"
-                      name="FechaEnvioKey" />
+                      name="ClienteID" />
                     <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[ClienteKey]"
+                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[ProductoID]"
                       dataType="i4"
-                      name="ClienteKey" />
+                      name="ProductoID" />
                     <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[ProductoKey]"
+                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[EmpleadoID]"
                       dataType="i4"
-                      name="ProductoKey" />
+                      name="EmpleadoID" />
                     <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[EmpleadoKey]"
+                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[TerritorioID]"
                       dataType="i4"
-                      name="EmpleadoKey" />
-                    <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[TerritorioKey]"
-                      dataType="i4"
-                      name="TerritorioKey" />
+                      name="TerritorioID" />
                     <externalMetadataColumn
                       refId="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta.Inputs[OLE DB Destination Input].ExternalColumns[Cantidad]"
                       dataType="i2"
@@ -2295,19 +2249,19 @@ OPTION (MAXRECURSION 0);</property>
     D.VentaID,
 
     CONVERT(INT, CONVERT(CHAR(8), V.Fecha, 112))
-        AS FechaVentaKey,
+        AS FechaVentaID,
 
     CASE
         WHEN V.FechaEnvio IS NULL THEN NULL
         ELSE CONVERT(INT, CONVERT(CHAR(8), V.FechaEnvio, 112))
-    END AS FechaEnvioKey,
+    END AS FechaEnvioID,
 
-    C.ClienteKey,
-    P.ProductoKey,
+    C.ClienteID,
+    P.ProductoID,
 
-    ISNULL(E.EmpleadoKey, -1) AS EmpleadoKey,
+    ISNULL(E.EmpleadoID, -1) AS EmpleadoID,
 
-    T.TerritorioKey,
+    T.TerritorioID,
 
     D.Cantidad,
 
@@ -2390,58 +2344,58 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
                       name="VentaID"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[FechaVentaKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[FechaVentaID]"
                       dataType="i4"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[FechaVentaKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[FechaVentaKey]"
-                      name="FechaVentaKey"
+                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[FechaVentaID]"
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[FechaVentaID]"
+                      name="FechaVentaID"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[FechaEnvioKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[FechaEnvioID]"
                       dataType="i4"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[FechaEnvioKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[FechaEnvioKey]"
-                      name="FechaEnvioKey"
+                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[FechaEnvioID]"
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[FechaEnvioID]"
+                      name="FechaEnvioID"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ClienteKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ClienteID]"
                       dataType="i4"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[ClienteKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ClienteKey]"
-                      name="ClienteKey"
+                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[ClienteID]"
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ClienteID]"
+                      name="ClienteID"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ProductoKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ProductoID]"
                       dataType="i4"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[ProductoKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ProductoKey]"
-                      name="ProductoKey"
+                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[ProductoID]"
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[ProductoID]"
+                      name="ProductoID"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[EmpleadoKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[EmpleadoID]"
                       dataType="i4"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[EmpleadoKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[EmpleadoKey]"
-                      name="EmpleadoKey"
+                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[EmpleadoID]"
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[EmpleadoID]"
+                      name="EmpleadoID"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[TerritorioKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[TerritorioID]"
                       dataType="i4"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[TerritorioKey]"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[TerritorioKey]"
-                      name="TerritorioKey"
+                      externalMetadataColumnId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[TerritorioID]"
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[TerritorioID]"
+                      name="TerritorioID"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
                       refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].Columns[Cantidad]"
@@ -2486,29 +2440,29 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
                       dataType="i4"
                       name="VentaID" />
                     <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[FechaVentaKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[FechaVentaID]"
                       dataType="i4"
-                      name="FechaVentaKey" />
+                      name="FechaVentaID" />
                     <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[FechaEnvioKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[FechaEnvioID]"
                       dataType="i4"
-                      name="FechaEnvioKey" />
+                      name="FechaEnvioID" />
                     <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[ClienteKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[ClienteID]"
                       dataType="i4"
-                      name="ClienteKey" />
+                      name="ClienteID" />
                     <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[ProductoKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[ProductoID]"
                       dataType="i4"
-                      name="ProductoKey" />
+                      name="ProductoID" />
                     <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[EmpleadoKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[EmpleadoID]"
                       dataType="i4"
-                      name="EmpleadoKey" />
+                      name="EmpleadoID" />
                     <externalMetadataColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[TerritorioKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[TerritorioID]"
                       dataType="i4"
-                      name="TerritorioKey" />
+                      name="TerritorioID" />
                     <externalMetadataColumn
                       refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Output].ExternalColumns[Cantidad]"
                       dataType="i2"
@@ -2543,35 +2497,35 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
                       lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[VentaID]"
                       name="VentaID" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[FechaVentaKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[FechaVentaID]"
                       dataType="i4"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[FechaVentaKey]"
-                      name="FechaVentaKey" />
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[FechaVentaID]"
+                      name="FechaVentaID" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[FechaEnvioKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[FechaEnvioID]"
                       dataType="i4"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[FechaEnvioKey]"
-                      name="FechaEnvioKey" />
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[FechaEnvioID]"
+                      name="FechaEnvioID" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[ClienteKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[ClienteID]"
                       dataType="i4"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[ClienteKey]"
-                      name="ClienteKey" />
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[ClienteID]"
+                      name="ClienteID" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[ProductoKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[ProductoID]"
                       dataType="i4"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[ProductoKey]"
-                      name="ProductoKey" />
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[ProductoID]"
+                      name="ProductoID" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[EmpleadoKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[EmpleadoID]"
                       dataType="i4"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[EmpleadoKey]"
-                      name="EmpleadoKey" />
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[EmpleadoID]"
+                      name="EmpleadoID" />
                     <outputColumn
-                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[TerritorioKey]"
+                      refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[TerritorioID]"
                       dataType="i4"
-                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[TerritorioKey]"
-                      name="TerritorioKey" />
+                      lineageId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[TerritorioID]"
+                      name="TerritorioID" />
                     <outputColumn
                       refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Outputs[OLE DB Source Error Output].Columns[Cantidad]"
                       dataType="i2"
@@ -2683,13 +2637,33 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
+          Size="181,42"
+          Id="Package\Borrar Datos Destino"
+          TopLeft="61,174" />
+        <NodeLayout
+          Size="139,42"
+          Id="Package\Dim_Cliente"
+          TopLeft="287,257" />
+        <NodeLayout
+          Size="154,42"
+          Id="Package\Dim_Empleado"
+          TopLeft="279,455" />
+        <NodeLayout
+          Size="149,42"
+          Id="Package\Dim_Producto"
+          TopLeft="281,349" />
+        <NodeLayout
+          Size="149,42"
+          Id="Package\Dim_Territorio"
+          TopLeft="281,546" />
+        <NodeLayout
           Size="141,42"
           Id="Package\Dim_Tiempo"
           TopLeft="286,175" />
         <NodeLayout
-          Size="181,42"
-          Id="Package\Borrar Datos Destino"
-          TopLeft="61,174" />
+          Size="176,42"
+          Id="Package\Fact_Detalle_Venta"
+          TopLeft="271,618" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción]"
           TopLeft="242,195.5">
@@ -2712,10 +2686,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="139,42"
-          Id="Package\Dim_Cliente"
-          TopLeft="287,257" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 1]"
           TopLeft="356.5,217">
@@ -2738,10 +2708,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="149,42"
-          Id="Package\Dim_Producto"
-          TopLeft="281,349" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 2]"
           TopLeft="356,299">
@@ -2764,10 +2730,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="154,42"
-          Id="Package\Dim_Empleado"
-          TopLeft="279,455" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 3]"
           TopLeft="355.75,391">
@@ -2790,10 +2752,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="149,42"
-          Id="Package\Dim_Territorio"
-          TopLeft="281,546" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 4]"
           TopLeft="355.75,497">
@@ -2816,10 +2774,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="176,42"
-          Id="Package\Fact_Detalle_Venta"
-          TopLeft="271,618" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 5]"
           TopLeft="357.25,588">
@@ -2845,6 +2799,258 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
       </GraphLayout>
     </LayoutInfo>
   </Package>
+  <TaskHost
+    design-time-name="Package\Dim_Cliente">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="175,42"
+          Id="Package\Dim_Cliente\Origen Dim_Cliente"
+          TopLeft="356,227" />
+        <NodeLayout
+          Size="179,42"
+          Id="Package\Dim_Cliente\Destino Dim_Cliente"
+          TopLeft="606.5,225.5" />
+        <EdgeLayout
+          Id="Package\Dim_Cliente.Paths[OLE DB Source Output]"
+          TopLeft="531,247.25">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="75.5,0"
+              Start="0,0"
+              End="68,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="68,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Cliente\Destino Dim_Cliente">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Cliente\Origen Dim_Cliente">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Dim_Empleado">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="190,42"
+          Id="Package\Dim_Empleado\Origen Dim_Empleado"
+          TopLeft="328,253" />
+        <NodeLayout
+          Size="195,42"
+          Id="Package\Dim_Empleado\Destino Dim_Empleado"
+          TopLeft="592.5,250.5" />
+        <EdgeLayout
+          Id="Package\Dim_Empleado.Paths[OLE DB Source Output]"
+          TopLeft="518,272.75">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="74.5,0"
+              Start="0,0"
+              End="67,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="67,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Empleado\Destino Dim_Empleado">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Empleado\Origen Dim_Empleado">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Dim_Producto">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="185,42"
+          Id="Package\Dim_Producto\Origen Dim_Producto"
+          TopLeft="288.5,214.5" />
+        <NodeLayout
+          Size="189,42"
+          Id="Package\Dim_Producto\Destino Dim_Producto"
+          TopLeft="608,218" />
+        <EdgeLayout
+          Id="Package\Dim_Producto.Paths[OLE DB Source Output]"
+          TopLeft="473.5,237.25">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="134.5,0"
+              Start="0,0"
+              End="127,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="127,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Producto\Destino Dim_Producto">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Producto\Origen Dim_Producto">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Dim_Territorio">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="189,42"
+          Id="Package\Dim_Territorio\Destino Dim_Territorio"
+          TopLeft="666,264" />
+        <NodeLayout
+          Size="185,42"
+          Id="Package\Dim_Territorio\Origen Dim_Territorio"
+          TopLeft="307.5,257.5" />
+        <EdgeLayout
+          Id="Package\Dim_Territorio.Paths[OLE DB Source Output]"
+          TopLeft="492.5,281.75">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="173.5,0"
+              Start="0,0"
+              End="166,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="166,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Territorio\Destino Dim_Territorio">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Territorio\Origen Dim_Territorio">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <TaskHost
     design-time-name="Package\Dim_Tiempo">
     <LayoutInfo>
@@ -2884,14 +3090,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Dim_Tiempo\Origen Dim_Tiempo">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
     design-time-name="Package\Dim_Tiempo\Destino Dim_Tiempo">
     <Properties>
       <Property>
@@ -2904,249 +3102,11 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
       </Property>
     </Properties>
   </PipelineComponentMetadata>
-  <TaskHost
-    design-time-name="Package\Dim_Cliente">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="175,42"
-          Id="Package\Dim_Cliente\Origen Dim_Cliente"
-          TopLeft="356,227" />
-        <NodeLayout
-          Size="179,42"
-          Id="Package\Dim_Cliente\Destino Dim_Cliente"
-          TopLeft="606.5,225.5" />
-        <EdgeLayout
-          Id="Package\Dim_Cliente.Paths[OLE DB Source Output]"
-          TopLeft="531,247.25">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="75.5,0"
-              Start="0,0"
-              End="68,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="68,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Dim_Cliente\Origen Dim_Cliente">
+    design-time-name="Package\Dim_Tiempo\Origen Dim_Tiempo">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Dim_Cliente\Destino Dim_Cliente">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <TaskHost
-    design-time-name="Package\Dim_Producto">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="185,42"
-          Id="Package\Dim_Producto\Origen Dim_Producto"
-          TopLeft="288.5,214.5" />
-        <NodeLayout
-          Size="189,42"
-          Id="Package\Dim_Producto\Destino Dim_Producto"
-          TopLeft="608,218" />
-        <EdgeLayout
-          Id="Package\Dim_Producto.Paths[OLE DB Source Output]"
-          TopLeft="473.5,237.25">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="134.5,0"
-              Start="0,0"
-              End="127,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="127,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Dim_Producto\Origen Dim_Producto">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Dim_Producto\Destino Dim_Producto">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <TaskHost
-    design-time-name="Package\Dim_Empleado">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="190,42"
-          Id="Package\Dim_Empleado\Origen Dim_Empleado"
-          TopLeft="328,253" />
-        <NodeLayout
-          Size="195,42"
-          Id="Package\Dim_Empleado\Destino Dim_Empleado"
-          TopLeft="592.5,250.5" />
-        <EdgeLayout
-          Id="Package\Dim_Empleado.Paths[OLE DB Source Output]"
-          TopLeft="518,272.75">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="74.5,0"
-              Start="0,0"
-              End="67,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="67,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Dim_Empleado\Origen Dim_Empleado">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Dim_Empleado\Destino Dim_Empleado">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <TaskHost
-    design-time-name="Package\Dim_Territorio">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="185,42"
-          Id="Package\Dim_Territorio\Origen Dim_Territorio"
-          TopLeft="307.5,257.5" />
-        <NodeLayout
-          Size="189,42"
-          Id="Package\Dim_Territorio\Destino Dim_Territorio"
-          TopLeft="666,264" />
-        <EdgeLayout
-          Id="Package\Dim_Territorio.Paths[OLE DB Source Output]"
-          TopLeft="492.5,281.75">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="173.5,0"
-              Start="0,0"
-              End="166,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="166,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Dim_Territorio\Origen Dim_Territorio">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Dim_Territorio\Destino Dim_Territorio">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -3154,7 +3114,7 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
     design-time-name="Package\Fact_Detalle_Venta">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="212,42"
           Id="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta"
@@ -3194,20 +3154,14 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta">
     <Properties>
@@ -3218,6 +3172,14 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
