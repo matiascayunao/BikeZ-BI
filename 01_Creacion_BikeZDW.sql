@@ -32,26 +32,28 @@ GO
 
 /* ---------------------------------------------------------------------
    DIM 1 - TIEMPO
-   FechaID = AAAAMMDD (ej.: 20150701), no IDENTITY.
+   FechaKey = AAAAMMDD (ej.: 20150701), no IDENTITY.
+   Misma dimension, dos roles en el hecho: venta y envio.
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Dim_Tiempo', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Tiempo
     (
-        FechaID         INT           NOT NULL,
+        FechaKey        INT           NOT NULL,
         Fecha           DATE          NOT NULL,
         Dia             TINYINT       NOT NULL,
         Mes             TINYINT       NOT NULL,
         Trimestre       TINYINT       NOT NULL,
         Anio            SMALLINT      NOT NULL,
         DiaSemana       NVARCHAR(20)  NOT NULL,
-        CONSTRAINT PK_Dim_Tiempo PRIMARY KEY (FechaID),
+        EsFinDeSemana   BIT           NOT NULL,
+        CONSTRAINT PK_Dim_Tiempo PRIMARY KEY (FechaKey),
         CONSTRAINT UQ_Dim_Tiempo_Fecha UNIQUE (Fecha),
         CONSTRAINT CK_Dim_Tiempo_Mes CHECK (Mes BETWEEN 1 AND 12),
         CONSTRAINT CK_Dim_Tiempo_Trimestre CHECK (Trimestre BETWEEN 1 AND 4),
         CONSTRAINT CK_Dim_Tiempo_Dia CHECK (Dia BETWEEN 1 AND 31),
-        CONSTRAINT CK_Dim_Tiempo_FechaID CHECK
-            (FechaID = CONVERT(INT, CONVERT(CHAR(8), Fecha, 112)))
+        CONSTRAINT CK_Dim_Tiempo_FechaKey CHECK
+            (FechaKey = CONVERT(INT, CONVERT(CHAR(8), Fecha, 112)))
     );
     PRINT N'Creada: Dim_Tiempo';
 END;
@@ -59,16 +61,19 @@ GO
 
 /* ---------------------------------------------------------------------
    DIM 2 - CLIENTE
-   ClienteID = clave sustituta / identificador en el DW.
+   ClienteKey = clave sustituta generada por SQL Server.
+   ClienteID = identificador original de negocio (no PK en el DW).
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Dim_Cliente', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Cliente
     (
-        ClienteID       INT           IDENTITY(1,1) NOT NULL,
+        ClienteKey      INT           IDENTITY(1,1) NOT NULL,
+        ClienteID       INT           NOT NULL,
         Nombre          NVARCHAR(50)  NULL,
         Apellido        NVARCHAR(50)  NULL,
-        CONSTRAINT PK_Dim_Cliente PRIMARY KEY (ClienteID)
+        CONSTRAINT PK_Dim_Cliente PRIMARY KEY (ClienteKey),
+        CONSTRAINT UQ_Dim_Cliente_ClienteID UNIQUE (ClienteID)
     );
     PRINT N'Creada: Dim_Cliente';
 END;
@@ -77,16 +82,19 @@ GO
 /* ---------------------------------------------------------------------
    DIM 3 - PRODUCTO
    Categoria se integra en la misma dimension (esquema estrella).
+   Para CategoriaID NULL, el ETL usara Categoria = 'Sin categoria'.
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Dim_Producto', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Producto
     (
-        ProductoID       INT           IDENTITY(1,1) NOT NULL,
-        Nombre_Producto         NVARCHAR(50)  NOT NULL,
-        Color            NVARCHAR(15)  NULL,
-        Categoria        NVARCHAR(50)  NOT NULL,
-        CONSTRAINT PK_Dim_Producto PRIMARY KEY (ProductoID)
+        ProductoKey     INT           IDENTITY(1,1) NOT NULL,
+        ProductoID      INT           NOT NULL,
+        Producto        NVARCHAR(50)  NOT NULL,
+        Color           NVARCHAR(15)  NULL,
+        Categoria       NVARCHAR(50)  NOT NULL,
+        CONSTRAINT PK_Dim_Producto PRIMARY KEY (ProductoKey),
+        CONSTRAINT UQ_Dim_Producto_ProductoID UNIQUE (ProductoID)
     );
     PRINT N'Creada: Dim_Producto';
 END;
@@ -94,49 +102,68 @@ GO
 
 /* ---------------------------------------------------------------------
    DIM 4 - EMPLEADO
-   EmpleadoID = clave sustituta. -1 se reserva para 'Sin asignar'.
+   EmpleadoKey = clave sustituta. -1 se reserva para 'Sin asignar'.
+   EmpleadoID NULL SOLO en el registro tecnico; los ID reales son unicos.
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Dim_Empleado', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Empleado
     (
-        EmpleadoID        INT           IDENTITY(1,1) NOT NULL,
+        EmpleadoKey       INT           IDENTITY(1,1) NOT NULL,
+        EmpleadoID        INT           NULL,
         Cargo             NVARCHAR(50)  NULL,
         Genero            NCHAR(1)      NULL,
         FechaNacimiento   DATE          NULL,
-        CONSTRAINT PK_Dim_Empleado PRIMARY KEY (EmpleadoID)
+        FechaContratacion DATE          NULL,
+        CONSTRAINT PK_Dim_Empleado PRIMARY KEY (EmpleadoKey)
     );
     PRINT N'Creada: Dim_Empleado';
 END;
 GO
 
+IF OBJECT_ID(N'dbo.Dim_Empleado', N'U') IS NOT NULL
+   AND NOT EXISTS
+       (SELECT 1 FROM sys.indexes
+        WHERE object_id = OBJECT_ID(N'dbo.Dim_Empleado')
+          AND name = N'UX_Dim_Empleado_EmpleadoID')
+BEGIN
+    CREATE UNIQUE INDEX UX_Dim_Empleado_EmpleadoID
+        ON dbo.Dim_Empleado (EmpleadoID)
+        WHERE EmpleadoID IS NOT NULL;
+    PRINT N'Creado indice unico de EmpleadoID (ignorando NULL).';
+END;
+GO
+
 /* Registro tecnico necesario para no perder ventas con VendedorID NULL. */
-IF NOT EXISTS (SELECT 1 FROM dbo.Dim_Empleado WHERE EmpleadoID = -1)
+IF NOT EXISTS (SELECT 1 FROM dbo.Dim_Empleado WHERE EmpleadoKey = -1)
 BEGIN
     SET IDENTITY_INSERT dbo.Dim_Empleado ON;
     INSERT INTO dbo.Dim_Empleado
-        (EmpleadoID, Cargo, Genero, FechaNacimiento)
+        (EmpleadoKey, EmpleadoID, Cargo, Genero, FechaNacimiento, FechaContratacion)
     VALUES
-        (-1, N'Sin asignar', NULL, NULL);
+        (-1, NULL, N'Sin asignar', NULL, NULL, NULL);
     SET IDENTITY_INSERT dbo.Dim_Empleado OFF;
-    PRINT N'Insertado empleado tecnico EmpleadoID = -1.';
+    PRINT N'Insertado empleado tecnico EmpleadoKey = -1.';
 END;
 GO
 
 /* ---------------------------------------------------------------------
    DIM 5 - TERRITORIO
    CantidadAlmacenes es el conteo por territorio en la fuente al cargar.
+   No representa ventas de almacenes ni un historico de su cantidad.
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Dim_Territorio', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Territorio
     (
-        TerritorioID       INT           IDENTITY(1,1) NOT NULL,
-        Nombre_Territorio         NVARCHAR(50)  NOT NULL,
-        Pais               NVARCHAR(50)  NOT NULL,
-        Grupo              NVARCHAR(50)  NOT NULL,
-        CantidadAlmacenes  INT           NOT NULL,
-        CONSTRAINT PK_Dim_Territorio PRIMARY KEY (TerritorioID),
+        TerritorioKey     INT           IDENTITY(1,1) NOT NULL,
+        TerritorioID      INT           NOT NULL,
+        Territorio        NVARCHAR(50)  NOT NULL,
+        Pais              NVARCHAR(50)  NOT NULL,
+        Grupo             NVARCHAR(50)  NOT NULL,
+        CantidadAlmacenes INT           NOT NULL,
+        CONSTRAINT PK_Dim_Territorio PRIMARY KEY (TerritorioKey),
+        CONSTRAINT UQ_Dim_Territorio_TerritorioID UNIQUE (TerritorioID),
         CONSTRAINT CK_Dim_Territorio_Almacenes CHECK (CantidadAlmacenes >= 0)
     );
     PRINT N'Creada: Dim_Territorio';
@@ -145,8 +172,10 @@ GO
 
 /* ---------------------------------------------------------------------
    HECHOS - DETALLE DE VENTA
-   DetalleVentaID es PK original.
+   DetalleVentaID es PK original, porque ya se verifico su unicidad.
    VentaID es identificador degenerado, necesario para COUNT(DISTINCT).
+   MontoTotal DECIMAL(29,4): permite producto entero x precio monetario.
+   FechaEnvioKey admite NULL para futuros registros sin envio.
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Fact_Detalle_Venta', N'U') IS NULL
 BEGIN
@@ -154,11 +183,12 @@ BEGIN
     (
         DetalleVentaID   INT           NOT NULL,
         VentaID          INT           NOT NULL,
-        FechaVentaID     INT           NOT NULL,
-        ClienteID        INT           NOT NULL,
-        ProductoID       INT           NOT NULL,
-        EmpleadoID       INT           NOT NULL,
-        TerritorioID     INT           NOT NULL,
+        FechaVentaKey    INT           NOT NULL,
+        FechaEnvioKey    INT           NULL,
+        ClienteKey       INT           NOT NULL,
+        ProductoKey      INT           NOT NULL,
+        EmpleadoKey      INT           NOT NULL,
+        TerritorioKey    INT           NOT NULL,
         Cantidad         SMALLINT      NOT NULL,
         PrecioUnitario   DECIMAL(19,4) NOT NULL,
         MontoTotal       DECIMAL(29,4) NOT NULL,
@@ -166,15 +196,17 @@ BEGIN
         CONSTRAINT PK_Fact_Detalle_Venta PRIMARY KEY (DetalleVentaID),
 
         CONSTRAINT FK_Fact_FechaVenta
-            FOREIGN KEY (FechaVentaID) REFERENCES dbo.Dim_Tiempo(FechaID),
+            FOREIGN KEY (FechaVentaKey) REFERENCES dbo.Dim_Tiempo(FechaKey),
+        CONSTRAINT FK_Fact_FechaEnvio
+            FOREIGN KEY (FechaEnvioKey) REFERENCES dbo.Dim_Tiempo(FechaKey),
         CONSTRAINT FK_Fact_Cliente
-            FOREIGN KEY (ClienteID) REFERENCES dbo.Dim_Cliente(ClienteID),
+            FOREIGN KEY (ClienteKey) REFERENCES dbo.Dim_Cliente(ClienteKey),
         CONSTRAINT FK_Fact_Producto
-            FOREIGN KEY (ProductoID) REFERENCES dbo.Dim_Producto(ProductoID),
+            FOREIGN KEY (ProductoKey) REFERENCES dbo.Dim_Producto(ProductoKey),
         CONSTRAINT FK_Fact_Empleado
-            FOREIGN KEY (EmpleadoID) REFERENCES dbo.Dim_Empleado(EmpleadoID),
+            FOREIGN KEY (EmpleadoKey) REFERENCES dbo.Dim_Empleado(EmpleadoKey),
         CONSTRAINT FK_Fact_Territorio
-            FOREIGN KEY (TerritorioID) REFERENCES dbo.Dim_Territorio(TerritorioID),
+            FOREIGN KEY (TerritorioKey) REFERENCES dbo.Dim_Territorio(TerritorioKey),
 
         CONSTRAINT CK_Fact_Cantidad CHECK (Cantidad > 0),
         CONSTRAINT CK_Fact_PrecioUnitario CHECK (PrecioUnitario >= 0),
@@ -199,15 +231,15 @@ IF OBJECT_ID(N'dbo.Fact_Detalle_Venta', N'U') IS NOT NULL
    AND NOT EXISTS
        (SELECT 1 FROM sys.indexes
         WHERE object_id = OBJECT_ID(N'dbo.Fact_Detalle_Venta')
-          AND name = N'IX_Fact_FechaVentaID')
-    CREATE INDEX IX_Fact_FechaVentaID ON dbo.Fact_Detalle_Venta(FechaVentaID);
+          AND name = N'IX_Fact_FechaVentaKey')
+    CREATE INDEX IX_Fact_FechaVentaKey ON dbo.Fact_Detalle_Venta(FechaVentaKey);
 GO
 
 /* ---------------------------------------------------------------------
    VERIFICACION (despues de ejecutar):
    - deben existir 6 tablas de usuario en BikeZDW
-   - deben existir 5 relaciones FK desde Fact_Detalle_Venta
-   - Dim_Empleado debe contener 1 registro tecnico, EmpleadoID = -1
+   - deben existir 6 relaciones FK desde Fact_Detalle_Venta
+   - Dim_Empleado debe contener 1 registro tecnico, EmpleadoKey = -1
    - las otras tablas estaran vacias hasta ejecutar el ETL
    --------------------------------------------------------------------- */
 PRINT N'========== TABLAS DE BikeZDW ==========';
@@ -228,7 +260,7 @@ WHERE fk.parent_object_id = OBJECT_ID(N'dbo.Fact_Detalle_Venta')
 ORDER BY fk.name;
 
 PRINT N'========== REGISTRO TECNICO ==========';
-SELECT EmpleadoID, Cargo
+SELECT EmpleadoKey, EmpleadoID, Cargo
 FROM dbo.Dim_Empleado
-WHERE EmpleadoID = -1;
+WHERE EmpleadoKey = -1;
 GO
