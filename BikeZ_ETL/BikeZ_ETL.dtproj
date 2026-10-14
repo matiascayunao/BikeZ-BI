@@ -26,7 +26,7 @@
           <SSIS:Property SSIS:Name="CreatorComputerName">LAPTOP-VBB1VRIR</SSIS:Property>
           <SSIS:Property SSIS:Name="Description">
           </SSIS:Property>
-          <SSIS:Property SSIS:Name="PasswordVerifier" SSIS:Sensitive="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAXCtFxxVbqEGWozhx8e/z5AAAAAACAAAAAAAQZgAAAAEAACAAAAAdNBmQf8L6zaK0RfUrva1aiLZ5D4YolPNioMCuJY/GfQAAAAAOgAAAAAIAACAAAAB60dnLcn0yHqSg2eW952nM9VtHBHT9XU1hIvVfVO5ecZAAAAClAUtCTFrdQYLhSx7qDIVsvC3Aahmz4UWJWAZNtEE9IgM9pX1Fg4IFAKE6jWY6DJW8SdhxP5PD+1fLqjf1gur3oWp+Z4ti89Tv946gtSMP/ffMdnXtlKS4gdIFVoopMtTj5+b/9NWGLKoOE1ZPOBomKmBQ5/Qkc/CCXTdvQoi7XahAtW7SgGv0PueynRht1xxAAAAAMw31d6FwOHoZqbOxGeqS5llAgaoOKo0Paw9qYeAYoAhip7f2q6Wm6qEY6p3AP9jxXUTypb25qwtojVwdIxiNew==</SSIS:Property>
+          <SSIS:Property SSIS:Name="PasswordVerifier" SSIS:Sensitive="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAANDRkWCtjEOORatuJ4xuMQAAAAACAAAAAAAQZgAAAAEAACAAAAAE/uKyOsYwG5I/pk30jwmSE1RxoQr4hXfD0M5FZpihXgAAAAAOgAAAAAIAACAAAACVhmOJwRj5EHbLyzMafHMSi6Bf5Vi9NfrrHcWovP+uuJAAAAA7lDiCs9UaCtn2LXORGMpK/g6mogS9sX68zI57aERPSygQXTMk09l2SRaJOzBaL9jvuX9454NaaDuSvYGSR0Hakpxn4GO9ni9jImoNzJZtt03mNUz1743GoSqCFALgAoA2/eEtJnK98SeSkNcEviZ3FAMjeTuP+Xw/0LgmKmk2uYr++JbeMUwLDQ90fQyFcedAAAAAM+kU1WMMuhDznIcBJMuiohF7CmJ2sQPWxU27n2vtcbGgv+y24xD5FOtjoi98XmA6hDkKiB+RU1W5ILIbjoEB7A==</SSIS:Property>
           <SSIS:Property SSIS:Name="FormatVersion">1</SSIS:Property>
         </SSIS:Properties>
         <SSIS:Packages>
@@ -42,10 +42,10 @@
                 <SSIS:Property SSIS:Name="Name">Carga_BikeZ</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionMajor">1</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionMinor">0</SSIS:Property>
-                <SSIS:Property SSIS:Name="VersionBuild">23</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionBuild">21</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionComments">
                 </SSIS:Property>
-                <SSIS:Property SSIS:Name="VersionGUID">{A03A6F5E-399C-44CB-A7CC-9E67BCFB5BF0}</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionGUID">{DDD4390F-2F69-4985-8754-59CBD4555F2B}</SSIS:Property>
                 <SSIS:Property SSIS:Name="PackageFormatVersion">8</SSIS:Property>
                 <SSIS:Property SSIS:Name="Description">
                 </SSIS:Property>
@@ -78,7 +78,7 @@
                     <SSIS:Property SSIS:Name="IncludeInDebugDump">0</SSIS:Property>
                     <SSIS:Property SSIS:Name="Required">0</SSIS:Property>
                     <SSIS:Property SSIS:Name="Sensitive">0</SSIS:Property>
-                    <SSIS:Property SSIS:Name="Value">Data Source=.;Initial Catalog=BikeZ;Provider=SQLNCLI11.1;Integrated Security=SSPI;Application Name=SSIS-Carga_BikeZ-{9191F8AD-0AB7-4A10-BAFA-C12F6D11B0CC}LocalHost.BikeZ;Auto Translate=False;</SSIS:Property>
+                    <SSIS:Property SSIS:Name="Value">Data Source=.;Initial Catalog=BikeZ;Provider=MSOLEDBSQL.1;Integrated Security=SSPI;Application Name=SSIS-Carga_BikeZ-{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}LocalHost.BikeZ;Auto Translate=False;</SSIS:Property>
                     <SSIS:Property SSIS:Name="DataType">18</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
