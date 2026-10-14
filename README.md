@@ -1,4 +1,3 @@
-<img width="779" height="603" alt="Modelo_Estrella_BikeZDW" src="https://github.com/user-attachments/assets/4e9f1596-de7b-4c60-9d6c-cd648fdffd84" />
 # BikeZ - Inteligencia de Negocios
 
 ## Integrantes y paralelo
