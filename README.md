@@ -63,7 +63,8 @@ Las dimensiones usan claves propias (`ClienteKey`, `ProductoKey`, `EmpleadoKey` 
 
 La dimensión de tiempo se relaciona dos veces con la tabla de hechos: una para la **fecha de venta** y otra para la **fecha de envío**. Así no es necesario crear dos tablas de fechas diferentes.
 
-![Modelo estrella de BikeZDW](Modelo_Estrella_BikeZDW.png)
+<img width="779" height="603" alt="Modelo_Estrella_BikeZDW" src="https://github.com/user-attachments/assets/0bb40b42-32d0-4d05-8b5b-48c2ad7fc9f2" />
+
 
 ### Paso 4. Tabla de hechos y medidas
 
