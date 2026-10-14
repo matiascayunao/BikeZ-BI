@@ -11,23 +11,11 @@
   DTS:LocaleID="13322"
   DTS:ObjectName="Carga_BikeZ"
   DTS:PackageType="5"
-  DTS:VersionBuild="21"
-  DTS:VersionGUID="{DDD4390F-2F69-4985-8754-59CBD4555F2B}">
+  DTS:VersionBuild="22"
+  DTS:VersionGUID="{FD1F130A-D993-44BD-AF38-FFEFB3030E18}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
-    <DTS:ConnectionManager
-      DTS:refId="Package.ConnectionManagers[LocalHost.BikeZ]"
-      DTS:CreationName="OLEDB"
-      DTS:DTSID="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}"
-      DTS:ObjectName="LocalHost.BikeZ">
-      <DTS:ObjectData>
-        <DTS:ConnectionManager
-          DTS:ConnectRetryCount="1"
-          DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=.;Initial Catalog=BikeZ;Provider=MSOLEDBSQL.1;Integrated Security=SSPI;Application Name=SSIS-Carga_BikeZ-{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}LocalHost.BikeZ;Auto Translate=False;" />
-      </DTS:ObjectData>
-    </DTS:ConnectionManager>
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[LocalHost.BikeZDW]"
       DTS:CreationName="OLEDB"
@@ -266,8 +254,8 @@
               <connections>
                 <connection
                   refId="Package\Dim_Cliente\Origen Dim_Cliente.Connections[OleDbConnection]"
-                  connectionManagerID="Package.ConnectionManagers[LocalHost.BikeZ]"
-                  connectionManagerRefId="Package.ConnectionManagers[LocalHost.BikeZ]"
+                  connectionManagerID="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
+                  connectionManagerRefId="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -600,8 +588,8 @@
               <connections>
                 <connection
                   refId="Package\Dim_Empleado\Origen Dim_Empleado.Connections[OleDbConnection]"
-                  connectionManagerID="Package.ConnectionManagers[LocalHost.BikeZ]"
-                  connectionManagerRefId="Package.ConnectionManagers[LocalHost.BikeZ]"
+                  connectionManagerID="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
+                  connectionManagerRefId="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -894,13 +882,6 @@
                       externalMetadataColumnId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[ProductoID]"
                       lineageId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].Columns[ProductoID]" />
                     <inputColumn
-                      refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].Columns[Producto]"
-                      cachedDataType="wstr"
-                      cachedLength="50"
-                      cachedName="Producto"
-                      externalMetadataColumnId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[Producto]"
-                      lineageId="Package\Dim_Producto\Origen Dim_Producto.Outputs[OLE DB Source Output].Columns[Producto]" />
-                    <inputColumn
                       refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].Columns[Color]"
                       cachedDataType="wstr"
                       cachedLength="15"
@@ -918,18 +899,9 @@
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[ProductoKey]"
-                      dataType="i4"
-                      name="ProductoKey" />
-                    <externalMetadataColumn
                       refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[ProductoID]"
                       dataType="i4"
                       name="ProductoID" />
-                    <externalMetadataColumn
-                      refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[Producto]"
-                      dataType="wstr"
-                      length="50"
-                      name="Producto" />
                     <externalMetadataColumn
                       refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[Color]"
                       dataType="wstr"
@@ -940,6 +912,11 @@
                       dataType="wstr"
                       length="50"
                       name="Categoria" />
+                    <externalMetadataColumn
+                      refId="Package\Dim_Producto\Destino Dim_Producto.Inputs[OLE DB Destination Input].ExternalColumns[Nombre_Producto]"
+                      dataType="wstr"
+                      length="50"
+                      name="Nombre_Producto" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1026,8 +1003,8 @@ LEFT JOIN dbo.Categorias AS C
               <connections>
                 <connection
                   refId="Package\Dim_Producto\Origen Dim_Producto.Connections[OleDbConnection]"
-                  connectionManagerID="Package.ConnectionManagers[LocalHost.BikeZ]"
-                  connectionManagerRefId="Package.ConnectionManagers[LocalHost.BikeZ]"
+                  connectionManagerID="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
+                  connectionManagerRefId="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -1398,8 +1375,8 @@ GROUP BY
               <connections>
                 <connection
                   refId="Package\Dim_Territorio\Origen Dim_Territorio.Connections[OleDbConnection]"
-                  connectionManagerID="Package.ConnectionManagers[LocalHost.BikeZ]"
-                  connectionManagerRefId="Package.ConnectionManagers[LocalHost.BikeZ]"
+                  connectionManagerID="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
+                  connectionManagerRefId="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -1632,12 +1609,6 @@ GROUP BY
                   name="OLE DB Destination Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].Columns[FechaKey]"
-                      cachedDataType="i4"
-                      cachedName="FechaKey"
-                      externalMetadataColumnId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[FechaKey]"
-                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[FechaKey]" />
-                    <inputColumn
                       refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].Columns[Fecha]"
                       cachedDataType="dbDate"
                       cachedName="Fecha"
@@ -1674,19 +1645,9 @@ GROUP BY
                       cachedName="DiaSemana"
                       externalMetadataColumnId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[DiaSemana]"
                       lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[DiaSemana]" />
-                    <inputColumn
-                      refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].Columns[EsFinDeSemana]"
-                      cachedDataType="bool"
-                      cachedName="EsFinDeSemana"
-                      externalMetadataColumnId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[EsFinDeSemana]"
-                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[EsFinDeSemana]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[FechaKey]"
-                      dataType="i4"
-                      name="FechaKey" />
                     <externalMetadataColumn
                       refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[Fecha]"
                       dataType="dbDate"
@@ -1710,12 +1671,12 @@ GROUP BY
                     <externalMetadataColumn
                       refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[DiaSemana]"
                       dataType="wstr"
-                      length="20"
+                      length="40"
                       name="DiaSemana" />
                     <externalMetadataColumn
-                      refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[EsFinDeSemana]"
-                      dataType="bool"
-                      name="EsFinDeSemana" />
+                      refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[FechaID]"
+                      dataType="i4"
+                      name="FechaID" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1835,8 +1796,8 @@ OPTION (MAXRECURSION 0);</property>
               <connections>
                 <connection
                   refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Connections[OleDbConnection]"
-                  connectionManagerID="Package.ConnectionManagers[LocalHost.BikeZ]"
-                  connectionManagerRefId="Package.ConnectionManagers[LocalHost.BikeZ]"
+                  connectionManagerID="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
+                  connectionManagerRefId="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -2361,8 +2322,8 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
               <connections>
                 <connection
                   refId="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta.Connections[OleDbConnection]"
-                  connectionManagerID="Package.ConnectionManagers[LocalHost.BikeZ]"
-                  connectionManagerRefId="Package.ConnectionManagers[LocalHost.BikeZ]"
+                  connectionManagerID="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
+                  connectionManagerRefId="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -2683,13 +2644,33 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
+          Size="181,42"
+          Id="Package\Borrar Datos Destino"
+          TopLeft="61,174" />
+        <NodeLayout
+          Size="139,42"
+          Id="Package\Dim_Cliente"
+          TopLeft="287,257" />
+        <NodeLayout
+          Size="154,42"
+          Id="Package\Dim_Empleado"
+          TopLeft="279,455" />
+        <NodeLayout
+          Size="149,42"
+          Id="Package\Dim_Producto"
+          TopLeft="281,349" />
+        <NodeLayout
+          Size="149,42"
+          Id="Package\Dim_Territorio"
+          TopLeft="281,546" />
+        <NodeLayout
           Size="141,42"
           Id="Package\Dim_Tiempo"
           TopLeft="286,175" />
         <NodeLayout
-          Size="181,42"
-          Id="Package\Borrar Datos Destino"
-          TopLeft="61,174" />
+          Size="176,42"
+          Id="Package\Fact_Detalle_Venta"
+          TopLeft="271,618" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción]"
           TopLeft="242,195.5">
@@ -2712,10 +2693,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="139,42"
-          Id="Package\Dim_Cliente"
-          TopLeft="287,257" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 1]"
           TopLeft="356.5,217">
@@ -2738,10 +2715,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="149,42"
-          Id="Package\Dim_Producto"
-          TopLeft="281,349" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 2]"
           TopLeft="356,299">
@@ -2764,10 +2737,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="154,42"
-          Id="Package\Dim_Empleado"
-          TopLeft="279,455" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 3]"
           TopLeft="355.75,391">
@@ -2790,10 +2759,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="149,42"
-          Id="Package\Dim_Territorio"
-          TopLeft="281,546" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 4]"
           TopLeft="355.75,497">
@@ -2816,10 +2781,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="176,42"
-          Id="Package\Fact_Detalle_Venta"
-          TopLeft="271,618" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 5]"
           TopLeft="357.25,588">
@@ -2845,65 +2806,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
       </GraphLayout>
     </LayoutInfo>
   </Package>
-  <TaskHost
-    design-time-name="Package\Dim_Tiempo">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="177,42"
-          Id="Package\Dim_Tiempo\Origen Dim_Tiempo"
-          TopLeft="305,184" />
-        <NodeLayout
-          Size="182,42"
-          Id="Package\Dim_Tiempo\Destino Dim_Tiempo"
-          TopLeft="564,185" />
-        <EdgeLayout
-          Id="Package\Dim_Tiempo.Paths[OLE DB Source Output]"
-          TopLeft="482,205.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="82,0"
-              Start="0,0"
-              End="74.5,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="74.5,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Dim_Tiempo\Origen Dim_Tiempo">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Dim_Tiempo\Destino Dim_Tiempo">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <TaskHost
     design-time-name="Package\Dim_Cliente">
     <LayoutInfo>
@@ -2943,19 +2845,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Dim_Cliente\Origen Dim_Cliente">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
     design-time-name="Package\Dim_Cliente\Destino Dim_Cliente">
     <Properties>
       <Property>
@@ -2968,54 +2857,8 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
       </Property>
     </Properties>
   </PipelineComponentMetadata>
-  <TaskHost
-    design-time-name="Package\Dim_Producto">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="185,42"
-          Id="Package\Dim_Producto\Origen Dim_Producto"
-          TopLeft="288.5,214.5" />
-        <NodeLayout
-          Size="189,42"
-          Id="Package\Dim_Producto\Destino Dim_Producto"
-          TopLeft="608,218" />
-        <EdgeLayout
-          Id="Package\Dim_Producto.Paths[OLE DB Source Output]"
-          TopLeft="473.5,237.25">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="134.5,0"
-              Start="0,0"
-              End="127,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="127,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Dim_Producto\Origen Dim_Producto">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Dim_Producto\Destino Dim_Producto">
+    design-time-name="Package\Dim_Cliente\Origen Dim_Cliente">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -3066,7 +2909,7 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Dim_Empleado\Origen Dim_Empleado">
+    design-time-name="Package\Dim_Empleado\Destino Dim_Empleado">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -3079,7 +2922,7 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Dim_Empleado\Destino Dim_Empleado">
+    design-time-name="Package\Dim_Empleado\Origen Dim_Empleado">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -3088,6 +2931,65 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Dim_Producto">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="185,42"
+          Id="Package\Dim_Producto\Origen Dim_Producto"
+          TopLeft="288.5,214.5" />
+        <NodeLayout
+          Size="189,42"
+          Id="Package\Dim_Producto\Destino Dim_Producto"
+          TopLeft="608,218" />
+        <EdgeLayout
+          Id="Package\Dim_Producto.Paths[OLE DB Source Output]"
+          TopLeft="473.5,237.25">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="134.5,0"
+              Start="0,0"
+              End="127,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="127,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Producto\Destino Dim_Producto">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Producto\Origen Dim_Producto">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -3130,14 +3032,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Dim_Territorio\Origen Dim_Territorio">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
     design-time-name="Package\Dim_Territorio\Destino Dim_Territorio">
     <Properties>
       <Property>
@@ -3147,6 +3041,73 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Territorio\Origen Dim_Territorio">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Dim_Tiempo">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="177,42"
+          Id="Package\Dim_Tiempo\Origen Dim_Tiempo"
+          TopLeft="305,184" />
+        <NodeLayout
+          Size="182,42"
+          Id="Package\Dim_Tiempo\Destino Dim_Tiempo"
+          TopLeft="564,185" />
+        <EdgeLayout
+          Id="Package\Dim_Tiempo.Paths[OLE DB Source Output]"
+          TopLeft="482,205.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="82,0"
+              Start="0,0"
+              End="74.5,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="74.5,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Tiempo\Destino Dim_Tiempo">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Dim_Tiempo\Origen Dim_Tiempo">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -3201,14 +3162,6 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
     design-time-name="Package\Fact_Detalle_Venta\Destino Fact_Detalle_Venta">
     <Properties>
       <Property>
@@ -3218,6 +3171,14 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
