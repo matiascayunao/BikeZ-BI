@@ -59,13 +59,13 @@ GO
 
 /* ---------------------------------------------------------------------
    DIM 2 - CLIENTE
-   ClienteID = clave sustituta / identificador en el DW.
+   ClienteID = identificador original de la fuente.
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Dim_Cliente', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Cliente
     (
-        ClienteID       INT           IDENTITY(1,1) NOT NULL,
+        ClienteID       INT            NOT NULL,
         Nombre          NVARCHAR(50)  NULL,
         Apellido        NVARCHAR(50)  NULL,
         CONSTRAINT PK_Dim_Cliente PRIMARY KEY (ClienteID)
@@ -82,7 +82,7 @@ IF OBJECT_ID(N'dbo.Dim_Producto', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Producto
     (
-        ProductoID       INT           IDENTITY(1,1) NOT NULL,
+        ProductoID       INT            NOT NULL,
         Nombre_Producto         NVARCHAR(50)  NOT NULL,
         Color            NVARCHAR(15)  NULL,
         Categoria        NVARCHAR(50)  NOT NULL,
@@ -94,13 +94,13 @@ GO
 
 /* ---------------------------------------------------------------------
    DIM 4 - EMPLEADO
-   EmpleadoID = clave sustituta. -1 se reserva para 'Sin asignar'.
+   EmpleadoID = identificador original de la fuente. -1 se reserva para 'Sin asignar'.
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Dim_Empleado', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Empleado
     (
-        EmpleadoID        INT           IDENTITY(1,1) NOT NULL,
+        EmpleadoID        INT            NOT NULL,
         Cargo             NVARCHAR(50)  NULL,
         Genero            NCHAR(1)      NULL,
         FechaNacimiento   DATE          NULL,
@@ -113,12 +113,18 @@ GO
 /* Registro tecnico necesario para no perder ventas con VendedorID NULL. */
 IF NOT EXISTS (SELECT 1 FROM dbo.Dim_Empleado WHERE EmpleadoID = -1)
 BEGIN
-    SET IDENTITY_INSERT dbo.Dim_Empleado ON;
+    IF EXISTS
+       (SELECT 1 FROM sys.identity_columns
+        WHERE object_id = OBJECT_ID(N'dbo.Dim_Empleado'))
+        SET IDENTITY_INSERT dbo.Dim_Empleado ON;
     INSERT INTO dbo.Dim_Empleado
         (EmpleadoID, Cargo, Genero, FechaNacimiento)
     VALUES
         (-1, N'Sin asignar', NULL, NULL);
-    SET IDENTITY_INSERT dbo.Dim_Empleado OFF;
+    IF EXISTS
+       (SELECT 1 FROM sys.identity_columns
+        WHERE object_id = OBJECT_ID(N'dbo.Dim_Empleado'))
+        SET IDENTITY_INSERT dbo.Dim_Empleado OFF;
     PRINT N'Insertado empleado tecnico EmpleadoID = -1.';
 END;
 GO
@@ -131,7 +137,7 @@ IF OBJECT_ID(N'dbo.Dim_Territorio', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Dim_Territorio
     (
-        TerritorioID       INT           IDENTITY(1,1) NOT NULL,
+        TerritorioID       INT            NOT NULL,
         Nombre_Territorio         NVARCHAR(100)  NOT NULL,
         Pais               NVARCHAR(50)  NOT NULL,
         Grupo              NVARCHAR(50)  NOT NULL,

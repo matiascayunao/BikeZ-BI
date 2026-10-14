@@ -53,22 +53,22 @@ Usamos cinco dimensiones:
 
 | Dimensión | Información que contiene |
 | --- | --- |
-| `Dim_Tiempo` | Fecha, día, mes, trimestre, año, día de la semana y si es fin de semana. |
+| `Dim_Tiempo` | Fecha, día, mes, trimestre, año y día de la semana. |
 | `Dim_Cliente` | ID original del cliente, nombre y apellido. |
 | `Dim_Producto` | ID original del producto, nombre, color y categoría. |
-| `Dim_Empleado` | ID original del empleado, cargo, género, fecha de nacimiento y contratación. |
+| `Dim_Empleado` | ID original del empleado, cargo, género y fecha de nacimiento. |
 | `Dim_Territorio` | ID original del territorio, nombre, país, grupo y cantidad de almacenes. |
 
-Las dimensiones usan claves propias (`ClienteKey`, `ProductoKey`, `EmpleadoKey` y `TerritorioKey`), mientras que los ID originales se mantienen para identificar los registros de la base transaccional. En `Dim_Tiempo`, `FechaKey` utiliza el formato `AAAAMMDD`.
+Las dimensiones usan los identificadores originales (`ClienteID`, `ProductoID`, `EmpleadoID` y `TerritorioID`) como claves primarias. En `Dim_Tiempo`, `FechaID` utiliza el formato `AAAAMMDD`.
 
-La dimensión de tiempo se relaciona dos veces con la tabla de hechos: una para la **fecha de venta** y otra para la **fecha de envío**. Así no es necesario crear dos tablas de fechas diferentes.
+La tabla de hechos se relaciona con `Dim_Tiempo` mediante `FechaVentaID`, que representa la fecha de venta. La fecha de envío no forma parte de este modelo.
 
 <img width="779" height="603" alt="Modelo_Estrella_BikeZDW" src="https://github.com/user-attachments/assets/0bb40b42-32d0-4d05-8b5b-48c2ad7fc9f2" />
 
 
 ### Paso 4. Tabla de hechos y medidas
 
-La tabla central es `Fact_Detalle_Venta`. Contiene `DetalleVentaID` como clave primaria, `VentaID` para identificar la venta y las claves que la relacionan con las cinco dimensiones (dos de ellas con `Dim_Tiempo`).
+La tabla central es `Fact_Detalle_Venta`. Contiene `DetalleVentaID` como clave primaria, `VentaID` para identificar la venta y las claves que la relacionan con las cinco dimensiones, incluida `FechaVentaID` para `Dim_Tiempo`.
 
 Sus medidas son:
 
@@ -86,7 +86,7 @@ La base original incluye `Ventas`, `DetalleVentas`, `Clientes`, `Productos`, `Ca
 
 Al revisar los registros encontramos algunos datos incompletos. Tomamos estas decisiones para mantener la información de ventas:
 
-- **Ventas sin vendedor identificado:** agregamos en `Dim_Empleado` un registro llamado «Sin asignar» con `EmpleadoKey = -1`. Así esos detalles siguen apareciendo en los resultados.
+- **Ventas sin vendedor identificado:** agregamos en `Dim_Empleado` un registro llamado «Sin asignar» con `EmpleadoID = -1`. Así esos detalles siguen apareciendo en los resultados.
 - **Productos sin categoría:** usamos `LEFT JOIN` y `COALESCE` para mostrar «Sin categoría» cuando corresponde.
 - **Clientes sin nombre o apellido y productos sin color:** conservamos los valores `NULL`, en lugar de inventar información.
 - **Territorio:** para analizar una venta usamos `Ventas.TerritorioID`, no el territorio del empleado.
