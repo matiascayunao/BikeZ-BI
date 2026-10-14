@@ -11,11 +11,23 @@
   DTS:LocaleID="13322"
   DTS:ObjectName="Carga_BikeZ"
   DTS:PackageType="5"
-  DTS:VersionBuild="22"
-  DTS:VersionGUID="{FD1F130A-D993-44BD-AF38-FFEFB3030E18}">
+  DTS:VersionBuild="23"
+  DTS:VersionGUID="{A03A6F5E-399C-44CB-A7CC-9E67BCFB5BF0}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[LocalHost.BikeZ]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{9191F8AD-0AB7-4A10-BAFA-C12F6D11B0CC}"
+      DTS:ObjectName="LocalHost.BikeZ">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=.;Initial Catalog=BikeZ;Provider=SQLNCLI11.1;Integrated Security=SSPI;Application Name=SSIS-Carga_BikeZ-{9191F8AD-0AB7-4A10-BAFA-C12F6D11B0CC}LocalHost.BikeZ;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[LocalHost.BikeZDW]"
       DTS:CreationName="OLEDB"
@@ -135,12 +147,6 @@
                   name="OLE DB Destination Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\Dim_Cliente\Destino Dim_Cliente.Inputs[OLE DB Destination Input].Columns[ClienteID]"
-                      cachedDataType="i4"
-                      cachedName="ClienteID"
-                      externalMetadataColumnId="Package\Dim_Cliente\Destino Dim_Cliente.Inputs[OLE DB Destination Input].ExternalColumns[ClienteID]"
-                      lineageId="Package\Dim_Cliente\Origen Dim_Cliente.Outputs[OLE DB Source Output].Columns[ClienteID]" />
-                    <inputColumn
                       refId="Package\Dim_Cliente\Destino Dim_Cliente.Inputs[OLE DB Destination Input].Columns[Nombre]"
                       cachedDataType="wstr"
                       cachedLength="50"
@@ -157,10 +163,6 @@
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\Dim_Cliente\Destino Dim_Cliente.Inputs[OLE DB Destination Input].ExternalColumns[ClienteKey]"
-                      dataType="i4"
-                      name="ClienteKey" />
                     <externalMetadataColumn
                       refId="Package\Dim_Cliente\Destino Dim_Cliente.Inputs[OLE DB Destination Input].ExternalColumns[ClienteID]"
                       dataType="i4"
@@ -254,8 +256,8 @@
               <connections>
                 <connection
                   refId="Package\Dim_Cliente\Origen Dim_Cliente.Connections[OleDbConnection]"
-                  connectionManagerID="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
-                  connectionManagerRefId="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
+                  connectionManagerID="Package.ConnectionManagers[LocalHost.BikeZ]"
+                  connectionManagerRefId="Package.ConnectionManagers[LocalHost.BikeZ]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -1721,7 +1723,7 @@ GROUP BY
                 <property
                   dataType="System.String"
                   description="Specifies the name of the database object used to open a rowset."
-                  name="OpenRowset"></property>
+                  name="OpenRowset">[dbo].[Dim_Tiempo]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the variable that contains the name of the database object used to open a rowset."
@@ -1787,7 +1789,7 @@ OPTION (MAXRECURSION 0);</property>
                   dataType="System.Int32"
                   description="Specifies the mode used to access the database."
                   name="AccessMode"
-                  typeConverter="AccessMode">2</property>
+                  typeConverter="AccessMode">0</property>
                 <property
                   dataType="System.String"
                   description="The mappings between the parameters in the SQL command and variables."
@@ -1796,8 +1798,8 @@ OPTION (MAXRECURSION 0);</property>
               <connections>
                 <connection
                   refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Connections[OleDbConnection]"
-                  connectionManagerID="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
-                  connectionManagerRefId="{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}:invalid"
+                  connectionManagerID="Package.ConnectionManagers[LocalHost.BikeZDW]"
+                  connectionManagerRefId="Package.ConnectionManagers[LocalHost.BikeZDW]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -1806,15 +1808,6 @@ OPTION (MAXRECURSION 0);</property>
                   refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output]"
                   name="OLE DB Source Output">
                   <outputColumns>
-                    <outputColumn
-                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[FechaKey]"
-                      dataType="i4"
-                      errorOrTruncationOperation="Conversion"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[FechaKey]"
-                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[FechaKey]"
-                      name="FechaKey"
-                      truncationRowDisposition="FailComponent" />
                     <outputColumn
                       refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[Fecha]"
                       dataType="dbDate"
@@ -1871,21 +1864,17 @@ OPTION (MAXRECURSION 0);</property>
                       name="DiaSemana"
                       truncationRowDisposition="FailComponent" />
                     <outputColumn
-                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[EsFinDeSemana]"
-                      dataType="bool"
+                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[FechaID]"
+                      dataType="i4"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[EsFinDeSemana]"
-                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[EsFinDeSemana]"
-                      name="EsFinDeSemana"
+                      externalMetadataColumnId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[FechaID]"
+                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].Columns[FechaID]"
+                      name="FechaID"
                       truncationRowDisposition="FailComponent" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[FechaKey]"
-                      dataType="i4"
-                      name="FechaKey" />
                     <externalMetadataColumn
                       refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[Fecha]"
                       dataType="dbDate"
@@ -1909,12 +1898,12 @@ OPTION (MAXRECURSION 0);</property>
                     <externalMetadataColumn
                       refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[DiaSemana]"
                       dataType="wstr"
-                      length="9"
+                      length="40"
                       name="DiaSemana" />
                     <externalMetadataColumn
-                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[EsFinDeSemana]"
-                      dataType="bool"
-                      name="EsFinDeSemana" />
+                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Output].ExternalColumns[FechaID]"
+                      dataType="i4"
+                      name="FechaID" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1923,10 +1912,10 @@ OPTION (MAXRECURSION 0);</property>
                   name="OLE DB Source Error Output">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[FechaKey]"
+                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[FechaID]"
                       dataType="i4"
-                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[FechaKey]"
-                      name="FechaKey" />
+                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[FechaID]"
+                      name="FechaID" />
                     <outputColumn
                       refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[Fecha]"
                       dataType="dbDate"
@@ -1955,14 +1944,9 @@ OPTION (MAXRECURSION 0);</property>
                     <outputColumn
                       refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[DiaSemana]"
                       dataType="wstr"
-                      length="9"
+                      length="40"
                       lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[DiaSemana]"
                       name="DiaSemana" />
-                    <outputColumn
-                      refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[EsFinDeSemana]"
-                      dataType="bool"
-                      lineageId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[EsFinDeSemana]"
-                      name="EsFinDeSemana" />
                     <outputColumn
                       refId="Package\Dim_Tiempo\Origen Dim_Tiempo.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -3108,6 +3092,11 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
