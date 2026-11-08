@@ -11,8 +11,8 @@
   DTS:LocaleID="13322"
   DTS:ObjectName="Carga_BikeZ"
   DTS:PackageType="5"
-  DTS:VersionBuild="23"
-  DTS:VersionGUID="{08930906-51F8-4748-BD39-20E42578CCD0}">
+  DTS:VersionBuild="29"
+  DTS:VersionGUID="{A095D517-F277-4871-8808-0C7956965D65}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -25,7 +25,7 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=.;Initial Catalog=BikeZ;Provider=MSOLEDBSQL.1;Integrated Security=SSPI;Application Name=SSIS-Carga_BikeZ-{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}LocalHost.BikeZ;Auto Translate=False;" />
+          DTS:ConnectionString="Data Source=.;Initial Catalog=BikeZ;Provider=MSOLEDBSQL.1;Integrated Security=SSPI;Auto Translate=False;Application Name=SSIS-Carga_BikeZ-{717CEDB2-ACCF-480A-9DF2-309341E8B4BC}LocalHost.BikeZ;" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
     <DTS:ConnectionManager
@@ -37,7 +37,7 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=.;Initial Catalog=BikeZDW;Provider=MSOLEDBSQL.1;Integrated Security=SSPI;Application Name=SSIS-Carga_BikeZ-{EFCE8737-E3EC-4CFD-B5F6-C51A6DBB5059}LocalHost.BikeZDW;Auto Translate=False;" />
+          DTS:ConnectionString="Data Source=.;Initial Catalog=BikeZDW;Provider=MSOLEDBSQL.1;Integrated Security=SSPI;Auto Translate=False;Application Name=SSIS-Carga_BikeZ-{EFCE8737-E3EC-4CFD-B5F6-C51A6DBB5059}LocalHost.BikeZDW;" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
@@ -1189,7 +1189,7 @@ LEFT JOIN dbo.Categorias AS C
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
-                  name="FastLoadKeepIdentity">true</property>
+                  name="FastLoadKeepIdentity">false</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
@@ -1262,7 +1262,7 @@ LEFT JOIN dbo.Categorias AS C
                     <externalMetadataColumn
                       refId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].ExternalColumns[Nombre_Territorio]"
                       dataType="wstr"
-                      length="100"
+                      length="50"
                       name="Nombre_Territorio" />
                     <externalMetadataColumn
                       refId="Package\Dim_Territorio\Destino Dim_Territorio.Inputs[OLE DB Destination Input].ExternalColumns[Pais]"
@@ -1575,7 +1575,7 @@ GROUP BY
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
-                  name="FastLoadKeepIdentity">true</property>
+                  name="FastLoadKeepIdentity">false</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
@@ -1678,7 +1678,7 @@ GROUP BY
                     <externalMetadataColumn
                       refId="Package\Dim_Tiempo\Destino Dim_Tiempo.Inputs[OLE DB Destination Input].ExternalColumns[DiaSemana]"
                       dataType="wstr"
-                      length="40"
+                      length="20"
                       name="DiaSemana" />
                   </externalMetadataColumns>
                 </input>
@@ -2659,25 +2659,25 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
         <NodeLayout
           Size="141,42"
           Id="Package\Dim_Tiempo"
-          TopLeft="286,175" />
+          TopLeft="287,177" />
         <NodeLayout
           Size="176,42"
           Id="Package\Fact_Detalle_Venta"
           TopLeft="271,618" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción]"
-          TopLeft="242,195.5">
+          TopLeft="242,196.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="44,0"
+              EndConnector="45,0"
               Start="0,0"
-              End="36.5,0">
+              End="37.5,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="36.5,0" />
+                    End="37.5,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2688,18 +2688,18 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 1]"
-          TopLeft="356.5,217">
+          TopLeft="357,219">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,40"
+              EndConnector="0,38"
               Start="0,0"
-              End="0,32.5">
+              End="0,30.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,32.5" />
+                    End="0,30.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2869,7 +2869,7 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
     design-time-name="Package\Dim_Empleado">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="190,42"
           Id="Package\Dim_Empleado\Origen Dim_Empleado"
@@ -2897,9 +2897,7 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -3114,7 +3112,7 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
     design-time-name="Package\Fact_Detalle_Venta">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="212,42"
           Id="Package\Fact_Detalle_Venta\Origen Fact_Detalle_Venta"
@@ -3154,9 +3152,7 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
