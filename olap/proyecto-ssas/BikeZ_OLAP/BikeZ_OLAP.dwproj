@@ -6,10 +6,71 @@
     <Name>BikeZ_OLAP.database</Name>
     <FullPath>BikeZ_OLAP.database</FullPath>
   </Database>
+  <Cubes>
+    <ProjectItem>
+      <Name>BikeZDW.cube</Name>
+      <FullPath>BikeZDW.cube</FullPath>
+      <Dependencies>
+        <ProjectItem>
+          <Name>BikeZDW.partitions</Name>
+          <FullPath>BikeZDW.partitions</FullPath>
+        </ProjectItem>
+      </Dependencies>
+    </ProjectItem>
+  </Cubes>
+  <Dimensions>
+    <ProjectItem>
+      <Name>Dim Territorio.dim</Name>
+      <FullPath>Dim Territorio.dim</FullPath>
+    </ProjectItem>
+    <ProjectItem>
+      <Name>Dim Empleado.dim</Name>
+      <FullPath>Dim Empleado.dim</FullPath>
+    </ProjectItem>
+    <ProjectItem>
+      <Name>Dim Tiempo.dim</Name>
+      <FullPath>Dim Tiempo.dim</FullPath>
+    </ProjectItem>
+    <ProjectItem>
+      <Name>Dim Cliente.dim</Name>
+      <FullPath>Dim Cliente.dim</FullPath>
+    </ProjectItem>
+    <ProjectItem>
+      <Name>Dim Producto.dim</Name>
+      <FullPath>Dim Producto.dim</FullPath>
+    </ProjectItem>
+  </Dimensions>
+  <DataSources>
+    <ProjectItem>
+      <Name>BikeZDW.ds</Name>
+      <FullPath>BikeZDW.ds</FullPath>
+    </ProjectItem>
+  </DataSources>
+  <DataSourceViews>
+    <ProjectItem>
+      <Name>BikeZDW.dsv</Name>
+      <FullPath>BikeZDW.dsv</FullPath>
+    </ProjectItem>
+  </DataSourceViews>
   <Configurations>
     <Configuration>
       <Name>Development</Name>
-      <Options />
+      <Options>
+        <ConnectionMappings>
+          <ConfigurationSetting>
+            <Id>BikeZDW</Id>
+            <Name>BikeZDW</Name>
+            <Value xsi:type="xsd:string">Provider=SQLNCLI11.1;Data Source=DESKTOP-EUT4T4G;Integrated Security=SSPI;Initial Catalog=BikeZDW</Value>
+          </ConfigurationSetting>
+        </ConnectionMappings>
+        <ConnectionSecurityMappings>
+          <ConfigurationSetting>
+            <Id>BikeZDW</Id>
+            <Name>BikeZDW</Name>
+            <Value xsi:type="xsd:int">0</Value>
+          </ConfigurationSetting>
+        </ConnectionSecurityMappings>
+      </Options>
     </Configuration>
   </Configurations>
 </Project>
