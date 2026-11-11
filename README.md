@@ -258,54 +258,109 @@ Para abrir el proyecto se necesita Visual Studio 2022 con la extensión **Micros
 
 El informe que revisamos tiene un modelo de datos importado basado en las tablas de `BikeZDW`. Puede abrirse para analizar esos datos sin conectarse a una instancia SSAS. **No afirmamos que Power BI consulte directamente el cubo OLAP**, porque esa conexión no se ha comprobado. Si se actualiza el origen de datos, es posible que se necesite configurar SQL Server y las credenciales en el computador donde se abra.
 
-## 9. Avance por fases y análisis de la segunda etapa
+##9. Avance por fases y análisis de la segunda etapa
 
-**Fase 1 — completada:** creamos el modelo estrella en `BikeZDW`, ejecutamos el ETL en SSIS y validamos que los detalles de venta coincidan con el origen. También conservamos el script SQL y el respaldo final del DW.
+Fase 1 — completada: creamos el modelo estrella en "BikeZDW", ejecutamos el ETL en SSIS y validamos que los detalles de venta coincidieran con los registros de la base original. También conservamos los scripts SQL y el respaldo final del Data Warehouse.
 
-**Fase 2 — desarrollada:** incorporamos al repositorio el proyecto multidimensional de SSAS y el dashboard de Power BI. El historial incluye commits de configuración del cubo, procesamiento reportado como exitoso, creación del dashboard y ajustes posteriores. Su ejecución en otro equipo depende de tener instalados los servicios y configurar las conexiones necesarias.
+Fase 2 — completada: incorporamos al repositorio el proyecto multidimensional de SQL Server Analysis Services (SSAS) y el dashboard desarrollado en Power BI. Configuramos el origen de datos, la vista del origen de datos, las dimensiones y el cubo OLAP. Posteriormente, el cubo fue desplegado, procesado y consultado correctamente, lo que pudimos comprobar mediante una demostración en Visual Studio.
 
-### 9.1. Cubo OLAP en Analysis Services
+También desarrollamos el dashboard con los indicadores definidos al comienzo del proyecto, incorporando gráficos, tablas y filtros para facilitar su análisis.
 
-El cubo permite analizar los hechos de ventas desde distintas perspectivas sin tener que revisar directamente todas las filas transaccionales. Para construirlo utilizamos como origen el DW de la primera fase:
+9.1. Cubo OLAP en Analysis Services
 
-- **Origen de datos (`.ds`):** establece la conexión con la base `BikeZDW`.
-- **Vista del origen de datos (`.dsv`):** incorpora la tabla `Fact_Detalle_Venta` y las cinco dimensiones relacionadas.
-- **Dimensiones (`.dim`):** corresponden a Tiempo, Cliente, Producto, Empleado y Territorio. Sus atributos permiten estudiar ventas según fecha, cliente, producto, vendedor o ubicación geográfica.
-- **Cubo (`BikeZDW.cube`):** reúne la configuración multidimensional y las medidas definidas a partir de la tabla de hechos.
+El cubo OLAP permite analizar los datos de ventas desde distintas perspectivas, utilizando dimensiones y medidas. Esto facilita la consulta de información sin tener que revisar directamente todas las filas de la base transaccional.
 
-El proyecto SSAS se encuentra en `olap/proyecto-ssas/BikeZ_OLAP/`. En el historial de GitHub se registró el procesamiento del cubo. Los atributos, jerarquías y medidas configurados pueden revisarse abriendo los archivos del proyecto en Visual Studio. Para consultar los resultados del cubo procesado es necesario disponer de una instancia de SSAS.
+Para construirlo utilizamos como origen el Data Warehouse "BikeZDW", desarrollado en la primera fase.
 
-### 9.2. Dashboard de Power BI
+Los principales componentes son:
 
-Desarrollamos un informe de tres páginas para presentar los resultados de manera más clara:
+- Origen de datos (".ds"): establece la conexión entre SSAS y la base de datos "BikeZDW".
+- Vista del origen de datos (".dsv"): incorpora la tabla "Fact_Detalle_Venta" y las cinco dimensiones relacionadas, definiendo la estructura de datos que utilizará el cubo.
+- Dimensiones (".dim"): corresponden a Tiempo, Cliente, Producto, Empleado y Territorio. Permiten analizar las ventas según distintas características, como fecha, producto, cliente, vendedor o ubicación geográfica.
+- Cubo ("BikeZDW.cube"): contiene la configuración multidimensional y las medidas obtenidas a partir de la tabla de hechos.
 
-| Página | Qué muestra |
-| --- | --- |
-| **Resumen Comercial** | Ingresos, unidades, ventas distintas, ticket promedio, recurrencia, evolución mensual, categorías y estacionalidad. |
-| **Análisis Geográfico** | Ingresos y porcentaje de participación por territorio, cantidad de almacenes, comparación territorial, mapa por país y tabla de detalle. |
-| **Clientes y Productos** | Clientes compradores y recurrentes, tasa de recurrencia, productos con mayores ingresos y detalle de compras por cliente. |
+El proyecto de Analysis Services se encuentra en "olap/proyecto-ssas/BikeZ_OLAP/", donde están los archivos necesarios para revisar su configuración desde Visual Studio.
 
-El informe utiliza medidas de Power BI y filtros interactivos por los campos que corresponden a cada página, como año, trimestre, categoría, país y vendedor. Al cambiar un filtro se recalculan los resultados visibles.
+Validación y funcionamiento del cubo
 
-Los principales KPI, revisados sin filtros, coinciden con el DW:
+Una vez configurado el proyecto, se realizó el despliegue y procesamiento del cubo "BikeZDW" mediante SQL Server Analysis Services.
 
-| Indicador | Resultado general |
-| --- | ---: |
-| Ingresos por ventas | 110.373.889,31 |
-| Unidades vendidas | 274.914 |
-| Ventas distintas | 31.465 |
-| Ticket promedio | 3.507,83 |
-| Clientes compradores | 19.119 |
-| Clientes recurrentes | 7.470 |
-| Porcentaje de clientes recurrentes | 39,07 % |
+Durante la demostración en Visual Studio, la implementación finalizó con 0 errores y 0 advertencias, y el procesamiento del cubo terminó correctamente.
 
-En la página geográfica aparece el cálculo **«Ingresos promedio por almacén del territorio»**, que divide los ingresos de un territorio por su número de almacenes. Es un indicador de referencia para comparar territorios, **no la venta real de cada almacén**, porque las ventas de origen no están asociadas individualmente a una tienda.
+Posteriormente, se utilizó el explorador del cubo para consultar sus medidas y comprobar que los resultados coincidieran con la información del Data Warehouse.
 
-El dashboard también considera los clientes cuyo nombre está vacío en la base original. En vez de eliminar sus ventas, los agrupa con la etiqueta **«Clientes sin nombre registrado»**. De esa forma los ingresos totales y los KPI se mantienen completos.
+Los valores obtenidos fueron:
 
-### 9.3. Qué aporta cada componente
+Medida| Resultado
+Ingresos por ventas| 110.373.889,31
+Unidades vendidas| 274.914
 
-El ETL prepara y carga la información; el DW organiza los datos de ventas mediante el modelo estrella; SSAS define el análisis multidimensional; y Power BI presenta indicadores, gráficos y filtros para apoyar decisiones comerciales. En nuestro caso, el tablero de Power BI se revisó sobre los datos del DW, sin dar por hecha una conexión directa al cubo SSAS.
+Ambos resultados coinciden con las consultas de validación realizadas anteriormente en SQL Server.
+
+Esta comprobación permitió verificar que el cubo fue desplegado, procesado y consultado correctamente para las medidas revisadas.
+
+El proyecto también contiene las dimensiones necesarias para el análisis multidimensional. Sus atributos y jerarquías pueden revisarse directamente desde Visual Studio.
+
+Para desplegar, procesar o consultar el cubo en otro computador, es necesario contar con una instancia de SSAS en modo multidimensional y configurar las conexiones y permisos correspondientes.
+
+9.2. Dashboard de Power BI
+
+Desarrollamos un dashboard en Power BI compuesto por tres páginas, con el objetivo de presentar los resultados de manera clara y permitir al usuario analizar los indicadores mediante gráficos y filtros interactivos.
+
+Página| Qué muestra
+Resumen Comercial| Ingresos, unidades vendidas, ventas distintas, ticket promedio, recurrencia de clientes, evolución mensual, categorías de productos y estacionalidad.
+Análisis Geográfico| Ingresos y porcentaje de participación por territorio, cantidad de almacenes, comparación territorial, mapa por país y tabla de detalle.
+Clientes y Productos| Clientes compradores y recurrentes, tasa de recurrencia, productos con mayores ingresos y detalle de compras por cliente.
+
+El dashboard incorpora filtros por año, trimestre, categoría, país y vendedor, según la página. Esto permite comparar los resultados y observar cómo cambian los indicadores dependiendo de la información seleccionada.
+
+Validación de los indicadores
+
+Para comprobar la consistencia del dashboard, comparamos sus indicadores generales, sin filtros, con los resultados obtenidos mediante consultas SQL sobre "BikeZDW".
+
+Indicador| Resultado general
+Ingresos por ventas| 110.373.889,31
+Unidades vendidas| 274.914
+Ventas distintas| 31.465
+Ticket promedio| 3.507,83
+Clientes compradores| 19.119
+Clientes recurrentes| 7.470
+Porcentaje de clientes recurrentes| 39,07 %
+
+Los resultados principales coincidieron con los valores obtenidos en el Data Warehouse.
+
+Análisis geográfico y almacenes
+
+En la página de análisis geográfico incorporamos el indicador «Ingresos promedio por almacén del territorio».
+
+Este cálculo divide los ingresos registrados en cada territorio por la cantidad de almacenes asociados a ese territorio.
+
+Su objetivo es entregar una referencia para comparar los territorios, pero no representa las ventas reales de cada almacén, ya que la base original no relaciona directamente las ventas con establecimientos individuales.
+
+Tratamiento de clientes sin nombre
+
+Durante la revisión del dashboard identificamos que una parte de los clientes no tenía nombre ni apellido registrado en la base original.
+
+Realizamos consultas en SQL Server y comprobamos que 9.341 clientes con ventas se encontraban en esta situación, representando 14.002 ventas.
+
+Para evitar que estos registros aparecieran como una fila vacía, se incorporó la etiqueta «Clientes sin nombre registrado».
+
+De esta manera, los datos siguen formando parte de los cálculos y no se pierden ventas ni se alteran los totales del dashboard.
+
+9.3. Qué aporta cada componente a la solución
+
+La solución de Inteligencia de Negocios desarrollada para BikeZ está compuesta por herramientas que cumplen distintas funciones:
+
+- SQL Server: almacena la base transaccional "BikeZ" y el Data Warehouse "BikeZDW".
+- SSIS: permite extraer, transformar y cargar los datos desde la base original hacia el modelo dimensional.
+- Data Warehouse: organiza la información mediante un modelo estrella, facilitando su análisis.
+- SSAS: permite implementar y procesar un cubo OLAP para analizar las medidas desde distintas dimensiones.
+- Power BI: presenta los indicadores mediante gráficos, tablas y filtros interactivos para apoyar la toma de decisiones.
+- GitHub: permite mantener el proyecto organizado, documentar sus componentes y registrar los aportes realizados por los integrantes.
+
+En nuestro proyecto, el dashboard de Power BI utiliza un modelo de datos basado en "BikeZDW". No se ha establecido como requisito de funcionamiento que consulte directamente el cubo OLAP.
+
+En conjunto, estos componentes permiten transformar los registros transaccionales de BikeZ en información útil para comprender el comportamiento de las ventas, identificar productos relevantes, analizar la recurrencia de clientes y comparar el desempeño comercial de los distintos territorios.
 
 ## 10. Dashboard finalizado
 
