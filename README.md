@@ -214,3 +214,17 @@ Hay que tener en cuenta que el paquete **borra los datos previamente cargados en
 
 **Fase 2:** pendiente de implementar el cubo OLAP en SSAS y el dashboard en Power BI. Los archivos se incorporarán a sus carpetas a medida que estén terminados.
 
+## 10. Dashboard finalizado
+
+Resumen comercial.
+<img width="1084" height="603" alt="image" src="https://github.com/user-attachments/assets/0e61b72e-c025-4673-9ec0-b68b27447479" />
+
+Analisis geografico.
+<img width="1081" height="603" alt="image" src="https://github.com/user-attachments/assets/58ca942f-f87d-41a2-abe8-d717a0a4b706" />
+
+Clientes y productos.
+<img width="1088" height="605" alt="image" src="https://github.com/user-attachments/assets/7d5574a1-243d-488d-9237-93e2e02d4fa7" />
+
+
+
+
