@@ -60,7 +60,7 @@
           <ConfigurationSetting>
             <Id>BikeZDW</Id>
             <Name>BikeZDW</Name>
-            <Value xsi:type="xsd:string">Provider=SQLNCLI11.1;Data Source=.;Integrated Security=SSPI;Initial Catalog=BikeZDW</Value>
+            <Value xsi:type="xsd:string">Provider=SQLNCLI11.1;Data Source=DESKTOP-EUT4T4G;Integrated Security=SSPI;Initial Catalog=BikeZDW</Value>
           </ConfigurationSetting>
         </ConnectionMappings>
         <ConnectionSecurityMappings>
