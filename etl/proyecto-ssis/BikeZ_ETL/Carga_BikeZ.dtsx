@@ -11,8 +11,8 @@
   DTS:LocaleID="13322"
   DTS:ObjectName="Carga_BikeZ"
   DTS:PackageType="5"
-  DTS:VersionBuild="29"
-  DTS:VersionGUID="{A095D517-F277-4871-8808-0C7956965D65}">
+  DTS:VersionBuild="30"
+  DTS:VersionGUID="{DF8A8D7A-9AA5-49B9-9098-4D5FEB2386E0}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -2637,31 +2637,31 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="181,42"
+          Size="180.8,41.6"
           Id="Package\Borrar Datos Destino"
           TopLeft="61,174" />
         <NodeLayout
-          Size="139,42"
+          Size="139.2,41.6"
           Id="Package\Dim_Cliente"
           TopLeft="287,257" />
         <NodeLayout
-          Size="154,42"
+          Size="153.6,41.6"
           Id="Package\Dim_Empleado"
           TopLeft="279,455" />
         <NodeLayout
-          Size="149,42"
+          Size="148.8,41.6"
           Id="Package\Dim_Producto"
           TopLeft="281,349" />
         <NodeLayout
-          Size="149,42"
+          Size="148.8,41.6"
           Id="Package\Dim_Territorio"
           TopLeft="281,546" />
         <NodeLayout
-          Size="141,42"
+          Size="140.8,41.6"
           Id="Package\Dim_Tiempo"
           TopLeft="287,177" />
         <NodeLayout
-          Size="176,42"
+          Size="176,41.6"
           Id="Package\Fact_Detalle_Venta"
           TopLeft="271,618" />
         <EdgeLayout
@@ -3055,11 +3055,11 @@ INNER JOIN BikeZDW.dbo.Dim_Territorio AS T
       <GraphLayout
         Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="177,42"
+          Size="176.8,41.6"
           Id="Package\Dim_Tiempo\Origen Dim_Tiempo"
           TopLeft="305,184" />
         <NodeLayout
-          Size="182,42"
+          Size="182.4,41.6"
           Id="Package\Dim_Tiempo\Destino Dim_Tiempo"
           TopLeft="564,185" />
         <EdgeLayout
