@@ -15,7 +15,7 @@ BikeZ es una empresa que vende artículos para motocross y que ha crecido bastan
 
 La idea de este trabajo es aprovechar esos datos para entender mejor cómo están funcionando las ventas y contar con información que ayude a tomar decisiones. Para eso usamos la base transaccional `BikeZ`, creamos una base dimensional llamada `BikeZDW` en SQL Server y desarrollamos un proceso ETL en Visual Studio con SSIS.
 
-En la primera fase nos enfocamos en el modelo dimensional, la carga de información y la comprobación de que los datos se hayan traspasado correctamente. Los cubos OLAP y Power BI corresponden a la segunda fase.
+El trabajo está dividido en dos fases. En la primera construimos el modelo dimensional y el proceso ETL, y validamos la información cargada. En la segunda agregamos el proyecto del cubo OLAP en SQL Server Analysis Services (SSAS) y el dashboard de Power BI para consultar los resultados.
 
 ## 2. Qué queremos analizar
 
@@ -101,7 +101,9 @@ Al revisar los registros encontramos algunos datos incompletos. Tomamos estas de
 - **Territorio:** para analizar una venta usamos `Ventas.TerritorioID`, no el territorio del empleado.
 - **Almacenes:** contamos los almacenes asociados a cada territorio y guardamos ese dato en `Dim_Territorio`. Es una referencia de la situación registrada en la base, no la cantidad histórica de almacenes al momento de cada venta.
 
-También construimos un calendario con todos los días del período, incluidos los que no tuvieron ventas. En esta fase no implementamos un historial de cambios de las dimensiones (SCD tipo 2).
+También construimos un calendario con todos los días del período, incluidos los que no tuvieron ventas. En el modelo entregado no implementamos un historial de cambios de las dimensiones (SCD tipo 2).
+
+Al revisar el dashboard encontramos una fila sin nombre de cliente que reunía un monto importante de ventas. Lo comprobamos en SQL Server y vimos que **no se originó en Power BI**: en la base transaccional hay 9.546 clientes sin nombre y apellido registrados; de ellos, **9.341 tienen ventas**. Esos 9.341 clientes representan **14.002 ventas y 90.677.393,27 en ingresos** dentro del DW. En el dashboard se muestran agrupados bajo la etiqueta «Clientes sin nombre registrado», sin excluirlos ni alterar los totales. Esto es una limitación de calidad de los datos de origen que se debe considerar al interpretar los resultados.
 
 ## 5. Cómo hicimos el ETL
 
@@ -161,7 +163,9 @@ El importe corresponde a los valores registrados en la base, sin asumir una mone
 
 ## 7. Archivos del repositorio
 
-```
+El proyecto está organizado por herramienta y por tipo de archivo. La estructura principal es esta (se muestran los archivos relevantes):
+
+```text
 BikeZ-BI/
 ├── README.md
 ├── .gitignore
@@ -173,25 +177,50 @@ BikeZ-BI/
 │       ├── BikeZ.bak
 │       └── BikeZDW_FINAL.bak
 ├── docs/
-│   └── modelo-dimensional/
-│       └── Modelo_Estrella_BikeZDW2.png
-└── etl/
-    └── proyecto-ssis/
-        └── BikeZ_ETL/
-            ├── BikeZ_ETL.sln
-            ├── BikeZ_ETL.dtproj
-            ├── Carga_BikeZ.dtsx
-            └── Project.params
+│   ├── modelo-dimensional/
+│   │   └── Modelo_Estrella_BikeZDW2.png
+│   └── dashboard/
+│       ├── resumen-comercial.png
+│       ├── analisis-geografico.png
+│       └── clientes-productos.png
+├── etl/
+│   └── proyecto-ssis/
+│       └── BikeZ_ETL/
+│           ├── BikeZ_ETL.sln
+│           ├── BikeZ_ETL.dtproj
+│           ├── Carga_BikeZ.dtsx
+│           └── Project.params
+├── olap/
+│   └── proyecto-ssas/
+│       └── BikeZ_OLAP/
+│           ├── BikeZ_OLAP.sln
+│           ├── BikeZ_OLAP.dwproj
+│           ├── BikeZ_OLAP.database
+│           ├── BikeZDW.ds
+│           ├── BikeZDW_DSV.dsv
+│           ├── BikeZDW.cube
+│           ├── Dim Cliente.dim
+│           ├── Dim Empleado.dim
+│           ├── Dim Producto.dim
+│           ├── Dim Territorio.dim
+│           └── Dim Tiempo.dim
+└── powerbi/
+    └── BikeZ_Dashboard.pbix
 ```
 
-Esta es la estructura que ya tenemos subida. Cada carpeta cumple una función:
+Las carpetas cumplen estas funciones:
 
-- `database/scripts/`: consultas para crear el modelo y validar que los datos se cargaron correctamente.
-- `database/backup/`: respaldo original `BikeZ.bak` y respaldo dimensional actualizado `BikeZDW_FINAL.bak`.
-- `docs/modelo-dimensional/`: imagen del modelo estrella.
-- `etl/proyecto-ssis/`: solución de Visual Studio y paquete SSIS completo.
+- `database/scripts/`: creación del DW y consultas para validar la carga.
+- `database/backup/`: respaldo de la base original y respaldo final del Data Warehouse.
+- `docs/modelo-dimensional/`: imagen del modelo estrella y sus relaciones.
+- `docs/dashboard/`: capturas de las tres páginas del informe de Power BI.
+- `etl/proyecto-ssis/`: solución y paquete de Integration Services para cargar la información.
+- `olap/proyecto-ssas/`: proyecto multidimensional de Analysis Services, con su origen de datos, vista de origen, dimensiones y cubo.
+- `powerbi/`: informe interactivo desarrollado en Power BI Desktop.
 
-Para la segunda fase también dejamos preparadas en el computador las carpetas `olap/proyecto-ssas/` y `powerbi/`. La presentación se guardará en `docs/presentacion/`. Estas carpetas aparecerán en GitHub cuando agreguemos sus archivos; Git no guarda carpetas vacías.
+El repositorio también conserva el historial de commits por integrante. Eso permite seguir por separado el trabajo del modelo y ETL, la configuración del OLAP, el procesamiento del cubo, y la creación y correcciones del dashboard.
+
+La presentación final puede agregarse a `docs/presentacion/` cuando el equipo tenga la versión definitiva; no la incluimos en el árbol anterior porque no se verificó que estuviera publicada.
 
 ## 8. Cómo revisar o ejecutar el trabajo
 
@@ -208,9 +237,85 @@ Para repetir el proceso completo:
 
 Hay que tener en cuenta que el paquete **borra los datos previamente cargados en `BikeZDW` antes de volver a cargarlos**. Por eso no se debe ejecutar sobre una base de destino cuyos datos se quieran conservar sin respaldo.
 
-## 9. Avance por fases
+### Revisar el proyecto OLAP
 
-**Fase 1:** modelo dimensional creado, ETL ejecutado y validado, y respaldo actualizado de `BikeZDW`.
+Para abrir el proyecto se necesita Visual Studio 2022 con la extensión **Microsoft Analysis Services Projects**, además de una instancia de **SQL Server Analysis Services en modo multidimensional** si se quiere desplegar, procesar o explorar el cubo.
 
-**Fase 2:** pendiente de implementar el cubo OLAP en SSAS y el dashboard en Power BI. Los archivos se incorporarán a sus carpetas a medida que estén terminados.
+1. Abrir `olap/proyecto-ssas/BikeZ_OLAP/BikeZ_OLAP.sln`.
+2. Revisar el origen de datos (`.ds`) y la vista del origen (`.dsv`), que utilizan las tablas del modelo `BikeZDW`.
+3. Revisar las cinco dimensiones (`.dim`) y el cubo (`BikeZDW.cube`). La configuración exacta de atributos, jerarquías y medidas se consulta dentro de esos archivos desde Visual Studio.
+4. Configurar el nombre de servidor y los permisos para que la cuenta que procese el cubo pueda leer `BikeZDW`.
+5. Si hay una instancia de SSAS disponible, desplegar y procesar el cubo y consultar los resultados. El historial del repositorio incluye el commit «Funciono el procesado del cubo», correspondiente al trabajo de esa etapa.
 
+**Importante:** el archivo `BikeZDW_FINAL.bak` es el respaldo de la base relacional de SQL Server, no un respaldo de un cubo SSAS ya desplegado. Tener el proyecto `.cube` en GitHub permite revisar su definición, pero no sustituye la comprobación de ejecución en Analysis Services.
+
+### Revisar el dashboard de Power BI
+
+1. Abrir `powerbi/BikeZ_Dashboard.pbix` en Power BI Desktop.
+2. Revisar las tres páginas: **Resumen Comercial**, **Análisis Geográfico** y **Clientes y Productos**.
+3. Probar los filtros de cada página y comprobar que los indicadores cambien de acuerdo con la selección.
+4. Comparar los valores sin filtros con la tabla de comprobación de la sección 6 y con las consultas SQL.
+
+El informe que revisamos tiene un modelo de datos importado basado en las tablas de `BikeZDW`. Puede abrirse para analizar esos datos sin conectarse a una instancia SSAS. **No afirmamos que Power BI consulte directamente el cubo OLAP**, porque esa conexión no se ha comprobado. Si se actualiza el origen de datos, es posible que se necesite configurar SQL Server y las credenciales en el computador donde se abra.
+
+## 9. Avance por fases y análisis de la segunda etapa
+
+**Fase 1 — completada:** creamos el modelo estrella en `BikeZDW`, ejecutamos el ETL en SSIS y validamos que los detalles de venta coincidan con el origen. También conservamos el script SQL y el respaldo final del DW.
+
+**Fase 2 — desarrollada:** incorporamos al repositorio el proyecto multidimensional de SSAS y el dashboard de Power BI. El historial incluye commits de configuración del cubo, procesamiento reportado como exitoso, creación del dashboard y ajustes posteriores. Su ejecución en otro equipo depende de tener instalados los servicios y configurar las conexiones necesarias.
+
+### 9.1. Cubo OLAP en Analysis Services
+
+El cubo permite analizar los hechos de ventas desde distintas perspectivas sin tener que revisar directamente todas las filas transaccionales. Para construirlo utilizamos como origen el DW de la primera fase:
+
+- **Origen de datos (`.ds`):** establece la conexión con la base `BikeZDW`.
+- **Vista del origen de datos (`.dsv`):** incorpora la tabla `Fact_Detalle_Venta` y las cinco dimensiones relacionadas.
+- **Dimensiones (`.dim`):** corresponden a Tiempo, Cliente, Producto, Empleado y Territorio. Sus atributos permiten estudiar ventas según fecha, cliente, producto, vendedor o ubicación geográfica.
+- **Cubo (`BikeZDW.cube`):** reúne la configuración multidimensional y las medidas definidas a partir de la tabla de hechos.
+
+El proyecto SSAS se encuentra en `olap/proyecto-ssas/BikeZ_OLAP/`. En el historial de GitHub se registró el procesamiento del cubo. Los atributos, jerarquías y medidas configurados pueden revisarse abriendo los archivos del proyecto en Visual Studio. Para consultar los resultados del cubo procesado es necesario disponer de una instancia de SSAS.
+
+### 9.2. Dashboard de Power BI
+
+Desarrollamos un informe de tres páginas para presentar los resultados de manera más clara:
+
+| Página | Qué muestra |
+| --- | --- |
+| **Resumen Comercial** | Ingresos, unidades, ventas distintas, ticket promedio, recurrencia, evolución mensual, categorías y estacionalidad. |
+| **Análisis Geográfico** | Ingresos y porcentaje de participación por territorio, cantidad de almacenes, comparación territorial, mapa por país y tabla de detalle. |
+| **Clientes y Productos** | Clientes compradores y recurrentes, tasa de recurrencia, productos con mayores ingresos y detalle de compras por cliente. |
+
+El informe utiliza medidas de Power BI y filtros interactivos por los campos que corresponden a cada página, como año, trimestre, categoría, país y vendedor. Al cambiar un filtro se recalculan los resultados visibles.
+
+Los principales KPI, revisados sin filtros, coinciden con el DW:
+
+| Indicador | Resultado general |
+| --- | ---: |
+| Ingresos por ventas | 110.373.889,31 |
+| Unidades vendidas | 274.914 |
+| Ventas distintas | 31.465 |
+| Ticket promedio | 3.507,83 |
+| Clientes compradores | 19.119 |
+| Clientes recurrentes | 7.470 |
+| Porcentaje de clientes recurrentes | 39,07 % |
+
+En la página geográfica aparece el cálculo **«Ingresos promedio por almacén del territorio»**, que divide los ingresos de un territorio por su número de almacenes. Es un indicador de referencia para comparar territorios, **no la venta real de cada almacén**, porque las ventas de origen no están asociadas individualmente a una tienda.
+
+El dashboard también considera los clientes cuyo nombre está vacío en la base original. En vez de eliminar sus ventas, los agrupa con la etiqueta **«Clientes sin nombre registrado»**. De esa forma los ingresos totales y los KPI se mantienen completos.
+
+### 9.3. Qué aporta cada componente
+
+El ETL prepara y carga la información; el DW organiza los datos de ventas mediante el modelo estrella; SSAS define el análisis multidimensional; y Power BI presenta indicadores, gráficos y filtros para apoyar decisiones comerciales. En nuestro caso, el tablero de Power BI se revisó sobre los datos del DW, sin dar por hecha una conexión directa al cubo SSAS.
+
+## 10. Dashboard finalizado
+
+Estas son las capturas del dashboard con los indicadores y visualizaciones que desarrollamos.
+
+**Resumen comercial.**
+<img width="1084" height="603" alt="image" src="docs/dashboard/resumen-comercial.png" />
+
+**Análisis geográfico.**
+<img width="1081" height="603" alt="image" src="docs/dashboard/analisis-geografico.png" />
+
+**Clientes y productos.**
+<img width="1088" height="605" alt="image" src="docs/dashboard/clientes-productos.png" />
